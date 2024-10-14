@@ -20,8 +20,6 @@ namespace WebAPI
             IConfigurationProvider secretProvider = config.Providers.First();
             secretProvider.TryGet("ConnectionStrings:SQL", out var secretData);
 
-            
-
             optionsBuilder.UseSqlServer(secretData);
         }
     }
