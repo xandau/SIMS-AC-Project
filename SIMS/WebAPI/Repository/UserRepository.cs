@@ -8,5 +8,10 @@ namespace WebAPI.Repository
         {
 
         }
+
+        public async Task<User> GetUserByMailAsync(string mail, string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

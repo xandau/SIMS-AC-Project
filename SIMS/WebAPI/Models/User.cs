@@ -19,35 +19,35 @@ namespace WebAPI.Models
         [Required]
         [StringLength(50)]
         [Column("USERNAME")]
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
 
         [Required]
         [StringLength(50)]
         [Column("FIRSTNAME")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
         [Column("LASTNAME")]
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
 
         [Required]
         [StringLength(300)]
         [Column("PASSWORD")]
-        public string Password { get; set; }
+        public required string Password { get; set; }
 
         [Required]
         [StringLength(50)]
         [Column("EMAIL")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
         [Column("ROLE")]
-        public ERoles Role { get; set; } = ERoles.USER;
+        public required ERoles Role { get; set; }
 
         [Required]
         [Column("BLOCKED")]
-        public bool Blocked { get; set; } = false;
+        public required bool Blocked { get; set; }
 
         public List<Ticket>? Tickets { get; set; }
 
