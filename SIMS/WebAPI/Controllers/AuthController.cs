@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using WebAPI.AuthServices;
 using WebAPI.Models;
 using WebAPI.Repository;

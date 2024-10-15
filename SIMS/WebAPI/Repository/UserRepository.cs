@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
+using System;
 
 namespace WebAPI.Repository
 {
@@ -15,9 +16,29 @@ namespace WebAPI.Repository
             return await _entities.SingleOrDefaultAsync(u => u.Email == mail && u.VerifyPassword(password) == true);
         }
 
-        internal async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await _entities.SingleOrDefaultAsync(u => u.UserName == username);
+        }
+
+        public async Task<User> CreateAsync(User entity, string password)
+        {
+            User user = new User()
+            {
+                UserUUID = Guid.NewGuid(),
+                Email = entity.Email,
+                UserName = entity.UserName,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                Blocked = false,
+                Role = Enums.ERoles.USER,
+            };
+
+            user.SetPassword(password);
+
+            _entities.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
         }
     }
 }

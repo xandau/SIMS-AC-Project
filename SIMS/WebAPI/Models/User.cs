@@ -50,6 +50,9 @@ public class User
 
     public List<Ticket>? Tickets { get; set; }
 
+    [NotMapped]
+    public string Password { get; set; }
+
     //method for hashing passwords
     public void SetPassword(string password)
     {

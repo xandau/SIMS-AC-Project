@@ -31,7 +31,7 @@ namespace WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserID"));
 
-                    b.Property<bool>("Blocked")
+                    b.Property<bool?>("Blocked")
                         .HasColumnType("bit")
                         .HasColumnName("BLOCKED");
 
@@ -54,16 +54,14 @@ namespace WebAPI.Migrations
                         .HasColumnName("LASTNAME");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("PASSWORD_HASH");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("PASSWORD_SALT");
 
-                    b.Property<int>("Role")
+                    b.Property<int?>("Role")
                         .HasColumnType("int")
                         .HasColumnName("ROLE");
 
@@ -74,7 +72,6 @@ namespace WebAPI.Migrations
                         .HasColumnName("USERNAME");
 
                     b.Property<string>("UserUUID")
-                        .IsRequired()
                         .HasColumnType("VARCHAR(300)")
                         .HasColumnName("User_UUID");
 

@@ -14,7 +14,7 @@ namespace WebAPI.Repository
             _entities = context.Set<Entity>();
         }
 
-        public async Task<Entity> CreateAsync(Entity entity)
+        public virtual async Task<Entity> CreateAsync(Entity entity)
         {
             _entities.Add(entity);
             await _context.SaveChangesAsync();

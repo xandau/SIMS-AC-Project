@@ -32,15 +32,15 @@ namespace WebAPI.Migrations
                 {
                     UserID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    User_UUID = table.Column<string>(type: "VARCHAR(300)", nullable: false),
+                    User_UUID = table.Column<string>(type: "VARCHAR(300)", nullable: true),
                     USERNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FIRSTNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LASTNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PASSWORD_HASH = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    PASSWORD_SALT = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PASSWORD_HASH = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PASSWORD_SALT = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     EMAIL = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ROLE = table.Column<int>(type: "int", nullable: false),
-                    BLOCKED = table.Column<bool>(type: "bit", nullable: false)
+                    ROLE = table.Column<int>(type: "int", nullable: true),
+                    BLOCKED = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
