@@ -53,7 +53,6 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(User user)
         {
-            Console.WriteLine(user);
             return Ok(await _userRepository.CreateAsync(user));
         }
     }

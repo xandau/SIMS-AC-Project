@@ -13,9 +13,8 @@ public class User
     [Column("UserID")]
     public long UserID { get; set; }
 
-    [Required]
     [Column("User_UUID", TypeName = "VARCHAR(300)")]
-    public Guid UserUUID { get; set; }
+    public Guid? UserUUID { get; set; }
 
     [Required]
     [StringLength(50)]
@@ -33,10 +32,10 @@ public class User
     public string LastName { get; set; }
 
     [Column("PASSWORD_HASH")]
-    public byte[] PasswordHash { get; set; }
+    public byte[]? PasswordHash { get; set; }
 
     [Column("PASSWORD_SALT")]
-    public byte[] PasswordSalt { get; set; }
+    public byte[]? PasswordSalt { get; set; }
 
     [Required]
     [StringLength(50)]
@@ -44,10 +43,10 @@ public class User
     public string Email { get; set; }
 
     [Column("ROLE")]
-    public ERoles Role { get; set; }
+    public ERoles? Role { get; set; }
 
     [Column("BLOCKED")]
-    public bool Blocked { get; set; }
+    public bool? Blocked { get; set; }
 
     public List<Ticket>? Tickets { get; set; }
 
