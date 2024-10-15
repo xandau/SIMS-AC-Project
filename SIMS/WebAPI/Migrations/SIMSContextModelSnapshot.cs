@@ -116,12 +116,12 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.Ticket", b =>
                 {
-                    b.Property<int>("TicketId")
+                    b.Property<long>("TicketId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasColumnName("TICKET_ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TicketId"));
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")

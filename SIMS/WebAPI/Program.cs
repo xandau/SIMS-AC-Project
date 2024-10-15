@@ -32,9 +32,12 @@ namespace WebAPI
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
 
             // Add Repository Pattern
+            
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<IRepository<Ticket>, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
+            
+            builder.Services.AddScoped<UserRepository>();
 
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<RedisTokenStore>();

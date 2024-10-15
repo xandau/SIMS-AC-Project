@@ -51,7 +51,7 @@ namespace WebAPI.Migrations
                 name: "TICKETS",
                 columns: table => new
                 {
-                    TICKET_ID = table.Column<int>(type: "int", nullable: false)
+                    TICKET_ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TITLE = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DESCRIPTION = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),

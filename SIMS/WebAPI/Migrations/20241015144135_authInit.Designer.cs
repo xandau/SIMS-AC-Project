@@ -12,8 +12,8 @@ using WebAPI;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(SIMSContext))]
-    [Migration("20241015132935_controllerMigrations")]
-    partial class controllerMigrations
+    [Migration("20241015144135_authInit")]
+    partial class authInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,12 +119,12 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.Ticket", b =>
                 {
-                    b.Property<int>("TicketId")
+                    b.Property<long>("TicketId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasColumnName("TICKET_ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TicketId"));
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")
