@@ -77,6 +77,12 @@ namespace WebAPI.Migrations
 
                     b.HasKey("UserID");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("USERS");
                 });
 

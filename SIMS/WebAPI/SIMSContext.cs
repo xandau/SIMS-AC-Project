@@ -13,5 +13,11 @@ namespace WebAPI
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().HasIndex(a => a.UserName).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(a => a.Email).IsUnique();
+        }
     }
 }

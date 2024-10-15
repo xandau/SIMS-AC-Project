@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using WebAPI.AuthServices;
+using WebAPI.DTOs;
 using WebAPI.Models;
 using WebAPI.Repository;
 
@@ -22,9 +23,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(LoginDTO login)
         {
-            User user = await _userRepository.GetUserByMailAsync(email, password);
+            Console.WriteLine(login.Email + " " + login.Password);
+            User user = await _userRepository.GetUserByMailAsync(login.Email, login.Password);
             if (user == null)
                 return Unauthorized("Inavlid Credentials");
 

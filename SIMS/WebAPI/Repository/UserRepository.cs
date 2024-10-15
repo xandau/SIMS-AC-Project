@@ -13,7 +13,14 @@ namespace WebAPI.Repository
 
         public async Task<User?> GetUserByMailAsync(string mail, string password)
         {
-            return await _entities.SingleOrDefaultAsync(u => u.Email == mail && u.VerifyPassword(password) == true);
+            User user = await _entities.Where(u => u.Email == mail).FirstAsync();
+
+            if (user != null && user.VerifyPassword(password) == true) 
+            { 
+                return user;
+            }
+            
+            return null;
         }
 
         public async Task<User?> GetUserByUsernameAsync(string username)
@@ -21,7 +28,7 @@ namespace WebAPI.Repository
             return await _entities.SingleOrDefaultAsync(u => u.UserName == username);
         }
 
-        public async Task<User> CreateAsync(User entity, string password)
+        public override async Task<User> CreateAsync(User entity)
         {
             User user = new User()
             {
@@ -34,7 +41,7 @@ namespace WebAPI.Repository
                 Role = Enums.ERoles.USER,
             };
 
-            user.SetPassword(password);
+            user.SetPassword(entity.Password);
 
             _entities.Add(user);
             await _context.SaveChangesAsync();
