@@ -1,4 +1,5 @@
-﻿using WebAPI.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using WebAPI.Models;
 
 namespace WebAPI.Repository
 {
@@ -9,9 +10,14 @@ namespace WebAPI.Repository
 
         }
 
-        public async Task<User> GetUserByMailAsync(string mail, string password)
+        public async Task<User?> GetUserByMailAsync(string mail, string password)
         {
-            throw new NotImplementedException();
+            return await _entities.SingleOrDefaultAsync(u => u.Email == mail && u.Password == password);
+        }
+
+        internal async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _entities.SingleOrDefaultAsync(u => u.UserName == username);
         }
     }
 }
