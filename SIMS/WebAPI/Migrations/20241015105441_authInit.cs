@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class authInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,8 @@ namespace WebAPI.Migrations
                     USERNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FIRSTNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LASTNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PASSWORD = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    PASSWORD_HASH = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PASSWORD_SALT = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     EMAIL = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ROLE = table.Column<int>(type: "int", nullable: false),
                     BLOCKED = table.Column<bool>(type: "bit", nullable: false)

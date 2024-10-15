@@ -9,18 +9,9 @@ namespace WebAPI
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public SIMSContext()
+        public SIMSContext(DbContextOptions options) : base(options)
         {
 
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            IConfigurationProvider secretProvider = config.Providers.First();
-            secretProvider.TryGet("ConnectionStrings:SQL", out var secretData);
-
-            optionsBuilder.UseSqlServer(secretData);
         }
     }
 }

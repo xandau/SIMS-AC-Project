@@ -12,8 +12,8 @@ using WebAPI;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(SIMSContext))]
-    [Migration("20241015082431_init")]
-    partial class init
+    [Migration("20241015105441_authInit")]
+    partial class authInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,67 @@ namespace WebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("User", b =>
+                {
+                    b.Property<long>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("UserID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserID"));
+
+                    b.Property<bool>("Blocked")
+                        .HasColumnType("bit")
+                        .HasColumnName("BLOCKED");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("EMAIL");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("FIRSTNAME");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("LASTNAME");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("PASSWORD_HASH");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("PASSWORD_SALT");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int")
+                        .HasColumnName("ROLE");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("USERNAME");
+
+                    b.Property<string>("UserUUID")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(300)")
+                        .HasColumnName("User_UUID");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("USERS");
+                });
 
             modelBuilder.Entity("WebAPI.Models.LogEntry", b =>
                 {
@@ -96,66 +157,9 @@ namespace WebAPI.Migrations
                     b.ToTable("TICKETS");
                 });
 
-            modelBuilder.Entity("WebAPI.Models.User", b =>
-                {
-                    b.Property<long>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("UserID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserID"));
-
-                    b.Property<bool>("Blocked")
-                        .HasColumnType("bit")
-                        .HasColumnName("BLOCKED");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("EMAIL");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("FIRSTNAME");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("LASTNAME");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("PASSWORD");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int")
-                        .HasColumnName("ROLE");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("USERNAME");
-
-                    b.Property<string>("UserUUID")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(300)")
-                        .HasColumnName("User_UUID");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("USERS");
-                });
-
             modelBuilder.Entity("WebAPI.Models.Ticket", b =>
                 {
-                    b.HasOne("WebAPI.Models.User", "Creator")
+                    b.HasOne("User", "Creator")
                         .WithMany("Tickets")
                         .HasForeignKey("CreatorUserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -164,7 +168,7 @@ namespace WebAPI.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("WebAPI.Models.User", b =>
+            modelBuilder.Entity("User", b =>
                 {
                     b.Navigation("Tickets");
                 });

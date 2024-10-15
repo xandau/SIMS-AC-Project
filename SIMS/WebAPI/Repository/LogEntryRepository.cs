@@ -6,6 +6,7 @@ namespace WebAPI.Repository
     {
         public LogEntryRepository(SIMSContext context) : base(context)
         {
+            _context = context;
         }
     }
 }

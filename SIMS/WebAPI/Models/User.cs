@@ -20,38 +20,34 @@ public class User
     [Required]
     [StringLength(50)]
     [Column("USERNAME")]
-    public required string UserName { get; set; }
+    public string UserName { get; set; }
 
     [Required]
     [StringLength(50)]
     [Column("FIRSTNAME")]
-    public required string FirstName { get; set; }
+    public string FirstName { get; set; }
 
     [Required]
     [StringLength(50)]
     [Column("LASTNAME")]
-    public required string LastName { get; set; }
+    public string LastName { get; set; }
 
-    [Required]
     [Column("PASSWORD_HASH")]
-    public required byte[] PasswordHash { get; set; }
+    public byte[] PasswordHash { get; set; }
 
-    [Required]
     [Column("PASSWORD_SALT")]
-    public required byte[] PasswordSalt { get; set; }
+    public byte[] PasswordSalt { get; set; }
 
     [Required]
     [StringLength(50)]
     [Column("EMAIL")]
-    public required string Email { get; set; }
+    public string Email { get; set; }
 
-    [Required]
     [Column("ROLE")]
-    public required ERoles Role { get; set; }
+    public ERoles Role { get; set; }
 
-    [Required]
     [Column("BLOCKED")]
-    public required bool Blocked { get; set; }
+    public bool Blocked { get; set; }
 
     public List<Ticket>? Tickets { get; set; }
 

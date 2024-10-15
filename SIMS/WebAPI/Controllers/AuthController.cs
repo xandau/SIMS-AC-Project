@@ -6,7 +6,7 @@ using WebAPI.Repository;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("auth")]
     public class AuthController : ControllerBase
     {
         private readonly JwtService _jwtService;
@@ -48,6 +48,13 @@ namespace WebAPI.Controllers
             var newRefreshToken = _jwtService.GenerateRefreshToken();
 
             return Ok(entry);
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> Register(User user)
+        {
+            Console.WriteLine(user);
+            return Ok(await _userRepository.CreateAsync(user));
         }
     }
 }

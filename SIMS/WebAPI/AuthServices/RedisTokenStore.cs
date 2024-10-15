@@ -7,7 +7,7 @@ namespace WebAPI.AuthServices
     {
         private readonly IDatabase _storage;
 
-        public RedisTokenStore(IDistributedCache cache)
+        public RedisTokenStore()
         {
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
             IConfigurationProvider secretProvider = config.Providers.First();
