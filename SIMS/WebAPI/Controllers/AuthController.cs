@@ -39,10 +39,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh(string refresh_token)
+        public async Task<IActionResult> Refresh(RefreshTokenDTO refresh_token)
         {
-            var entry = await _redisTokenStore.GetUserFromRefreshToken(refresh_token);
-            if (entry == null)
+            var entry = await _redisTokenStore.GetUserFromRefreshToken(refresh_token.Token);
+            if (entry.Length != 2)
                 return Unauthorized("Invalid refresh token");
 
             User user = await _userRepository.GetUserByUsernameAsync(entry[1].Value.ToString());
@@ -50,7 +50,10 @@ namespace WebAPI.Controllers
             var accessToken = _jwtService.GenerateAccessToken(user);
             var newRefreshToken = _jwtService.GenerateRefreshToken();
 
-            return Ok(entry);
+            if (_redisTokenStore.RemoveRefreshTokenAsync(refresh_token.Token).Result == true)
+                _redisTokenStore?.StoreRefreshTokenAsync(user.UserID, user.UserName, newRefreshToken);
+            
+            return Ok(new { AccessToken = accessToken, RefreshToken = newRefreshToken });
         }
 
         [HttpPost("register")]

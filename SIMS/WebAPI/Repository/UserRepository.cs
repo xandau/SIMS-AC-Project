@@ -25,7 +25,7 @@ namespace WebAPI.Repository
 
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return await _entities.SingleOrDefaultAsync(u => u.UserName == username);
+            return await _entities.Where(u => u.UserName == username).FirstAsync();
         }
 
         public override async Task<User> CreateAsync(User entity)
