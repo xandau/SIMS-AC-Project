@@ -11,6 +11,9 @@ namespace BlazorClient
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://127.0.0.1:7292") });
+            builder.Services.AddHttpClient();
+
 
             var app = builder.Build();
 
