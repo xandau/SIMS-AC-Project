@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using WebAPI.AuthServices;
 using WebAPI.DTOs;
@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
             Console.WriteLine(login.Email + " " + login.Password);
             User user = await _userRepository.GetUserByMailAsync(login.Email, login.Password);
             if (user == null)
-                return Unauthorized("Inavlid Credentials");
+                return Unauthorized("Invalid Credentials");
 
             var accessToken = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
@@ -59,7 +59,23 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(User user)
         {
-            return Ok(await _userRepository.CreateAsync(user));
+            try
+            {
+                var createdUser = await _userRepository.CreateAsync(user);
+                return Ok(createdUser);
+            }
+            catch (InvalidOperationException ex) when (ex.Message == "Email/User already exists.")
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex) when (ex.Message == "Email/User already exists.")
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

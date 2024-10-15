@@ -39,6 +39,7 @@ public class User
 
     [Required]
     [StringLength(50)]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
     [Column("EMAIL")]
     public string Email { get; set; }
 
