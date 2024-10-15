@@ -10,7 +10,7 @@ namespace WebAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("TICKET_ID")]
-        public int TicketId { get; set; }
+        public long TicketId { get; set; }
 
         [Required]
         [StringLength(50)]
