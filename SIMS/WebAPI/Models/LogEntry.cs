@@ -13,15 +13,15 @@ namespace WebAPI.Models
 
         [Required]
         [Column("TIMESTAMP")]
-        public DateTime Timestamp{ get; set; }
+        public required DateTime Timestamp { get; set; }
 
         [Required]
         [Column("LEVEL")]
-        public LogLevel Level { get; set; }
+        public required LogLevel Level { get; set; }
 
         [Required]
         [Column("MESSAGE")]
         [StringLength(500)]
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 }

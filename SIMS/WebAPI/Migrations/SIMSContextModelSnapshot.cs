@@ -63,9 +63,12 @@ namespace WebAPI.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATION_TIME");
 
-                    b.Property<long>("CreatorID")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("CreatorID")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("CREATOR_ID");
+
+                    b.Property<long>("CreatorUserID")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -85,7 +88,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("TicketId");
 
-                    b.HasIndex("CreatorID");
+                    b.HasIndex("CreatorUserID");
 
                     b.ToTable("TICKETS");
                 });
@@ -151,7 +154,7 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("WebAPI.Models.User", "Creator")
                         .WithMany("Tickets")
-                        .HasForeignKey("CreatorID")
+                        .HasForeignKey("CreatorUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

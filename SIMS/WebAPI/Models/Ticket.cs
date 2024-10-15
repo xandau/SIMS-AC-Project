@@ -15,25 +15,25 @@ namespace WebAPI.Models
         [Required]
         [StringLength(50)]
         [Column("TITLE")]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Required]
         [StringLength(500)]
         [Column("DESCRIPTION")]
-        public string Description { get; set; }
+        public required string Description { get; set; }
 
         [Required]
         [Column("STATE")]
-        public ETicketState State { get; set; } = ETicketState.OPEN;
+        public required ETicketState State { get; set; } = ETicketState.OPEN;
 
         [Required]
         [Column("CREATION_TIME")]
-        public DateTime CreationTime { get; set; }
+        public required DateTime CreationTime { get; set; }
 
         [Required]
         [Column("CREATOR_ID")]
-        public long CreatorID { get; set; }
-        public User Creator { get; set; }
+        public required Guid CreatorID { get; set; }
+        public required User Creator { get; set; }
 
         
     }
