@@ -251,3 +251,4 @@ docker/sql/model.mdf
 docker/sql/modellog.ldf
 docker/sql/SIMS.mdf
 docker/sql/SIMS_log.ldf
+SIMS/AngularClient/hello-world/.angular/cache/18.2.8/hello-world/.tsbuildinfo

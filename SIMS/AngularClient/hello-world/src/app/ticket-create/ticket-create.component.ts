@@ -27,6 +27,10 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class TicketCreateComponent {
   ticketForm: FormGroup;
+  isSuccess: boolean = false;  // Flag to indicate if the ticket is successfully created
+  isError: boolean = false;    // Flag to indicate if there was an error
+  errorMessage: string = '';   // Store the error message to display
+  countdown: number = 5;       // Countdown in seconds before redirecting to dashboard
 
   constructor(
     private fb: FormBuilder,
@@ -72,10 +76,22 @@ export class TicketCreateComponent {
       this.http.post('https://localhost:7292/ticket', jsonTicketData, { headers }).subscribe({
         next: (response: any) => {
           console.log('Ticket created successfully!', response);
-          this.router.navigate(['/tickets']);  // Redirect to ticket list after creation
+          this.isSuccess = true;  // Mark as successful creation
+          this.isError = false;   // Reset error flag
+
+          // Start the countdown timer
+          const countdownInterval = setInterval(() => {
+            this.countdown--;  // Decrement the countdown by 1 every second
+            if (this.countdown === 0) {
+              clearInterval(countdownInterval);  // Stop the countdown
+              this.router.navigate(['/dashboard']);  // Redirect to dashboard
+            }
+          }, 1000);  // 1000 ms = 1 second
         },
         error: (err) => {
           console.error('Error creating ticket', err);
+          this.isError = true;  // Set error flag to true
+          this.errorMessage = 'There was an error creating the ticket. Please try again.'; // Set a custom error message
         }
       });
     }

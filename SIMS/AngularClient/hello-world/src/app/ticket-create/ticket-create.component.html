@@ -1,7 +1,14 @@
 <div class="modal-container">
     <mat-card class="create-ticket-card">
       <h2>Create New Ticket</h2>
-      <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+  
+      <!-- Success message and countdown after ticket creation -->
+      <div *ngIf="isSuccess">
+        <p>Ticket created successfully! Redirecting to Dashboard in {{ countdown }} seconds...</p>
+      </div>
+  
+      <!-- Ticket creation form -->
+      <form *ngIf="!isSuccess" [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
         <!-- Title Field -->
         <mat-form-field appearance="fill">
           <mat-label>Title</mat-label>
@@ -50,6 +57,11 @@
           Create Ticket
         </button>
       </form>
+  
+      <!-- Error message if something goes wrong -->
+      <div *ngIf="isError" class="error-message">
+        <p>Something went wrong. Please try again.</p>
+      </div>
     </mat-card>
   </div>
   

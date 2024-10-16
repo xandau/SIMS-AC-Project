@@ -68,4 +68,16 @@
   .mat-form-field-label mat-label {
     font-size: 1rem;
   }
+  .create-ticket-card {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .error-message {
+    color: red;   /* Red color for the error message */
+    font-weight: bold;
+    margin-top: 20px;   /* Spacing between the form and error message */
+    text-align: center; /* Center the error message */
+  }
   
