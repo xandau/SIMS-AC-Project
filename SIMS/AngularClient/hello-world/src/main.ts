@@ -1,16 +1,18 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
+import { provideHttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';  // Import withFetch from @angular/common/http
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { CookieService } from 'ngx-cookie-service'; // Import CookieService
+import { CookieService } from 'ngx-cookie-service';
+import { AuthInterceptor } from './app/auth.interceptor';  // Ensure the path is correct
 import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes),      // Provide router for navigation
-    provideHttpClient(withFetch()),  // Enable fetch API for HttpClient
-    provideAnimations(),        // Provide animations for Angular Material components
-    CookieService                  // Provide CookieService globally
+    provideHttpClient(),
+    provideRouter(routes),
+    provideAnimations(),
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ]
 });
