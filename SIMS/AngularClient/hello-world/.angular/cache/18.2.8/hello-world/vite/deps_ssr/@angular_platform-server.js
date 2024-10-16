@@ -1,5 +1,12 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
+  BrowserDomAdapter,
+  BrowserModule,
+  DomRendererFactory2,
+  EVENT_MANAGER_PLUGINS,
+  EventManagerPlugin
+} from "./chunk-RQF5DNLA.js";
+import {
   AnimationDriver,
   AnimationEngine,
   AnimationRendererFactory,
@@ -7,19 +14,12 @@ import {
   NoopAnimationDriver,
   WebAnimationsDriver,
   WebAnimationsStyleNormalizer
-} from "./chunk-4DYVBR7O.js";
-import {
-  BrowserDomAdapter,
-  BrowserModule,
-  DomRendererFactory2,
-  EVENT_MANAGER_PLUGINS,
-  EventManagerPlugin
-} from "./chunk-UN5MP5CG.js";
+} from "./chunk-R76QNYDL.js";
 import {
   HTTP_ROOT_INTERCEPTOR_FNS,
   HttpClientModule
-} from "./chunk-JD5YZ4BN.js";
-import "./chunk-LABZZ4ZM.js";
+} from "./chunk-MYNXW5XR.js";
+import "./chunk-BZVEOPKA.js";
 import {
   DOCUMENT,
   NullViewportScroller,
@@ -29,7 +29,7 @@ import {
   XhrFactory,
   getDOM,
   setRootDomAdapter
-} from "./chunk-6K3IK2DV.js";
+} from "./chunk-TR5LKBLI.js";
 import {
   ALLOW_MULTIPLE_PLATFORMS,
   ANIMATION_MODULE_TYPE,
@@ -66,7 +66,8 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-TW4XVQZD.js";
+} from "./chunk-3LSL4UQH.js";
+import "./chunk-7GF5BRHJ.js";
 import {
   __async,
   __toESM

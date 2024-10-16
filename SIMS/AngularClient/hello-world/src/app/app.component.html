@@ -2,9 +2,15 @@
   <span>My Website</span>
   <span class="spacer"></span>
   <a mat-button routerLink="/">Home</a>
-  <a mat-button routerLink="/login">Login</a>
-  <a mat-button routerLink="/register">Register</a>
-  <a mat-button routerLink="/dashboard">Dashboard</a>
+  <a mat-button routerLink="/login">Login</a>         <!-- Link to Login -->
+  <a mat-button routerLink="/register">Register</a>   <!-- Link to Register -->
+  <a mat-button routerLink="/dashboard">Dashboard</a> <!-- Link to Dashboard -->
+  <a mat-button routerLink="/tickets">Tickets</a>     <!-- Link to Tickets -->
+
+  <!-- Conditionally display the "Create Ticket" button -->
+  <button *ngIf="showCreateTicketButton" mat-raised-button color="accent" (click)="openCreateTicketForm()">
+    Create Ticket
+  </button>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

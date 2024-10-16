@@ -4,21 +4,27 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TicketComponent } from './ticket/ticket.component';
-import { AuthGuard } from './auth.guard';
+import { TicketCreateComponent } from './ticket-create/ticket-create.component'; // Import the correct component
+import { AuthGuard } from './auth.guard';  // Import AuthGuard if necessary
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },  // Make Home route accessible to everyone
+  { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
-    canActivate: [AuthGuard]  // Protected route
+    canActivate: [AuthGuard] 
   },
   { 
     path: 'tickets', 
     component: TicketComponent, 
-    canActivate: [AuthGuard]  // Protect tickets with AuthGuard
+    canActivate: [AuthGuard] 
   },
-  { path: '**', redirectTo: '' }  // Redirect any unknown routes to the home page
+  { 
+    path: 'create-ticket', 
+    component: TicketCreateComponent, // Reference the correct component name
+    canActivate: [AuthGuard]  // Protect if necessary
+  },
+  { path: '**', redirectTo: '' }
 ];
