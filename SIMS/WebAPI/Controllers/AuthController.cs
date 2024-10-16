@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             var accessToken = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
 
-            await _redisTokenStore.StoreRefreshTokenAsync(user.UserID, user.UserName, refreshToken);
+            await _redisTokenStore.StoreRefreshTokenAsync(user.ID, user.UserName, refreshToken);
 
             return Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
         }
@@ -51,7 +51,7 @@ namespace WebAPI.Controllers
             var newRefreshToken = _jwtService.GenerateRefreshToken();
 
             if (_redisTokenStore.RemoveRefreshTokenAsync(refresh_token.Token).Result == true)
-                _redisTokenStore?.StoreRefreshTokenAsync(user.UserID, user.UserName, newRefreshToken);
+                _redisTokenStore?.StoreRefreshTokenAsync(user.ID, user.UserName, newRefreshToken);
             
             return Ok(new { AccessToken = accessToken, RefreshToken = newRefreshToken });
         }
@@ -61,8 +61,8 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var createdUser = await _userRepository.CreateAsync(user);
-                return Ok(createdUser);
+                await _userRepository.CreateAsync(user);
+                return Ok();
             }
             catch (InvalidOperationException ex) when (ex.Message == "Email/User already exists.")
             {
