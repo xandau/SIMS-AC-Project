@@ -6,13 +6,9 @@ using WebAPI.Enums;
 using WebAPI.Models;
 
 [Table("USERS")]
-public class User
+public class User : AItem
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Column("UserID")]
-    public long UserID { get; set; }
-
+    
     [Column("User_UUID", TypeName = "VARCHAR(300)")]
     public Guid? UserUUID { get; set; }
 
@@ -49,8 +45,19 @@ public class User
     [Column("BLOCKED")]
     public bool? Blocked { get; set; }
 
-    public List<Ticket>? Tickets { get; set; }
+    
+    
+    
+    
+    
+    public List<Ticket>? CreatedTickets { get; set; } 
+    public List<Ticket>? AssignedTickets { get; set; } 
 
+    
+    
+    
+    
+    
     [NotMapped]
     public string Password { get; set; }
 

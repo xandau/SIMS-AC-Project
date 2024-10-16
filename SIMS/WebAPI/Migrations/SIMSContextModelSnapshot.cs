@@ -24,12 +24,12 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("User", b =>
                 {
-                    b.Property<long>("UserID")
+                    b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("UserID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
                     b.Property<bool?>("Blocked")
                         .HasColumnType("bit")
@@ -75,7 +75,7 @@ namespace WebAPI.Migrations
                         .HasColumnType("VARCHAR(300)")
                         .HasColumnName("User_UUID");
 
-                    b.HasKey("UserID");
+                    b.HasKey("ID");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -88,12 +88,12 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.LogEntry", b =>
                 {
-                    b.Property<long>("LogEntryID")
+                    b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("LOG_ENTRY_ID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("LogEntryID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
                     b.Property<int>("Level")
                         .HasColumnType("int")
@@ -109,30 +109,36 @@ namespace WebAPI.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("TIMESTAMP");
 
-                    b.HasKey("LogEntryID");
+                    b.HasKey("ID");
 
                     b.ToTable("LOG_ENTRIES");
                 });
 
             modelBuilder.Entity("WebAPI.Models.Ticket", b =>
                 {
-                    b.Property<long>("TicketId")
+                    b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("TICKET_ID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TicketId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
+
+                    b.Property<long?>("AssignedPersonID")
+                        .HasColumnType("bigint")
+                        .HasColumnName("ASSIGNEDPERSON_ID");
+
+                    b.Property<string>("CVE")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CVE");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATION_TIME");
 
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<long>("CreatorID")
+                        .HasColumnType("bigint")
                         .HasColumnName("CREATOR_ID");
-
-                    b.Property<long>("CreatorUserID")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -140,9 +146,17 @@ namespace WebAPI.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("DESCRIPTION");
 
+                    b.Property<byte>("Severity")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("Severity");
+
                     b.Property<int>("State")
                         .HasColumnType("int")
                         .HasColumnName("STATE");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("TIMESTAMP");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -150,27 +164,38 @@ namespace WebAPI.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("TITLE");
 
-                    b.HasKey("TicketId");
+                    b.HasKey("ID");
 
-                    b.HasIndex("CreatorUserID");
+                    b.HasIndex("AssignedPersonID");
+
+                    b.HasIndex("CreatorID");
 
                     b.ToTable("TICKETS");
                 });
 
             modelBuilder.Entity("WebAPI.Models.Ticket", b =>
                 {
+                    b.HasOne("User", "AssignedPerson")
+                        .WithMany("AssignedTickets")
+                        .HasForeignKey("AssignedPersonID")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("User", "Creator")
-                        .WithMany("Tickets")
-                        .HasForeignKey("CreatorUserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("CreatedTickets")
+                        .HasForeignKey("CreatorID")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("AssignedPerson");
 
                     b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("User", b =>
                 {
-                    b.Navigation("Tickets");
+                    b.Navigation("AssignedTickets");
+
+                    b.Navigation("CreatedTickets");
                 });
 #pragma warning restore 612, 618
         }
