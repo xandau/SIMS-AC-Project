@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';  // Import Ma
 import { MatInputModule } from '@angular/material/input';            // Import MatInputModule
 import { MatButtonModule } from '@angular/material/button';          // Import MatButtonModule
 import { MatCardModule } from '@angular/material/card';              // Import MatCardModule
+import { MatSelectModule } from '@angular/material/select';          // Import MatSelectModule for dropdowns
 import { CommonModule } from '@angular/common';                      // Import CommonModule for *ngIf and other directives
 
 @Component({
@@ -16,6 +17,7 @@ import { CommonModule } from '@angular/common';                      // Import C
     MatInputModule,      // Add Material input module for form inputs
     MatButtonModule,     // Add Material button module
     MatCardModule,       // Add Material card module for mat-card
+    MatSelectModule,     // Add Material select module for dropdown
     ReactiveFormsModule, // Add ReactiveFormsModule for using formGroup
     CommonModule         // Import CommonModule for structural directives like *ngIf
   ],
@@ -33,7 +35,7 @@ export class TicketCreateComponent {
     this.ticketForm = this.fb.group({
       TITLE: ['', [Validators.required]],
       DESCRIPTION: ['', [Validators.required]],
-      STATE: [2],  // Default state for new tickets
+      STATE: [2, [Validators.required]],  // Default state for new tickets, required
       CREATORID: [1],  // Assuming current user ID is 1
       Severity: [5],
       CVE: [''],
@@ -43,7 +45,7 @@ export class TicketCreateComponent {
   onSubmit() {
     if (this.ticketForm.valid) {
       const ticketData = this.ticketForm.value;
-      this.http.post('/api/tickets', ticketData).subscribe({
+      this.http.post('https://localhost:7292/ticket', ticketData).subscribe({
         next: (response: any) => {
           console.log('Ticket created successfully!', response);
           this.router.navigate(['/tickets']);  // Redirect to ticket list after creation
