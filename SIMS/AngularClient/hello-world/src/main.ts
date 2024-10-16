@@ -1,14 +1,16 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http'; // Provide HttpClientModule
+import { provideHttpClient, withFetch } from '@angular/common/http';  // Import withFetch from @angular/common/http
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { CookieService } from 'ngx-cookie-service'; // Import CookieService
 import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes),
-    provideHttpClient(), // Add HttpClientModule support here
-    provideAnimations(), // Required for Angular Material
-  ],
+    provideRouter(routes),      // Provide router for navigation
+    provideHttpClient(withFetch()),  // Enable fetch API for HttpClient
+    provideAnimations(),        // Provide animations for Angular Material components
+    CookieService                  // Provide CookieService globally
+  ]
 });

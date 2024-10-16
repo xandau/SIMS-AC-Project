@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';  // Ensure HttpClient is imported
+import { HttpClient, HttpClientModule } from '@angular/common/http';  // Ensure HttpClientModule is imported
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
+    HttpClientModule,  // Add HttpClientModule here
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -40,7 +41,7 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
-      this.http.post('/auth/login', loginData).subscribe({
+      this.http.post('https://localhost:7292/auth/login', loginData).subscribe({
         next: (response: any) => {
           console.log('Login successful!', response);
           this.router.navigate(['/']); // Redirect to home page after login
