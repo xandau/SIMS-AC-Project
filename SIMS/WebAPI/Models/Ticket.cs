@@ -44,11 +44,10 @@ namespace WebAPI.Models
         [Column("CREATOR_ID")]
         public long CreatorID { get; set; }
 
-        //[JsonIgnore]
-        public User? Creator { get; set; }
+        public virtual User? Creator { get; set; }
 
         [Column("ASSIGNEDPERSON_ID")]
         public long? AssignedPersonID { get; set; }
-        public User? AssignedPerson { get; set; }
+        public virtual User? AssignedPerson { get; set; }
     }
 }

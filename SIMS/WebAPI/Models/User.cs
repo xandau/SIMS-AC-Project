@@ -50,8 +50,8 @@ public class User : AItem
     
     
     
-    public List<Ticket>? CreatedTickets { get; set; } 
-    public List<Ticket>? AssignedTickets { get; set; } 
+    public virtual List<Ticket>? CreatedTickets { get; set; } 
+    public virtual List<Ticket>? AssignedTickets { get; set; } 
 
     
     

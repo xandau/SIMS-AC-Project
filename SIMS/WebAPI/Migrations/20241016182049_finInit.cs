@@ -75,7 +75,8 @@ namespace WebAPI.Migrations
                         name: "FK_TICKETS_USERS_CREATOR_ID",
                         column: x => x.CREATOR_ID,
                         principalTable: "USERS",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

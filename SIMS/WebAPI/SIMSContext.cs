@@ -23,6 +23,17 @@ namespace WebAPI
             modelBuilder.Entity<Ticket>().HasKey(a => a.ID);
             modelBuilder.Entity<LogEntry>().HasKey(a => a.ID);
 
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Creator)
+                .WithMany(u => u.CreatedTickets)
+                .HasForeignKey(t => t.CreatorID);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.AssignedPerson)
+                .WithMany(u => u.AssignedTickets)
+                .HasForeignKey(t => t.AssignedPersonID);
+
+            /*
             modelBuilder.Entity<User>()
                 .HasMany(u => u.CreatedTickets)
                 .WithOne(t => t.Creator)
@@ -34,6 +45,7 @@ namespace WebAPI
                 .WithOne(t => t.AssignedPerson)
                 .HasForeignKey(t => t.AssignedPersonID)
                 .OnDelete(DeleteBehavior.NoAction);
+            */
         }
     }
 }
