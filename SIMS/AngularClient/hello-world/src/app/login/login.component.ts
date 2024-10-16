@@ -55,7 +55,7 @@ export class LoginComponent {
           this.logCurrentCookies();
 
           // Redirect to home page after login
-          // this.router.navigate(['/']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('Login failed', err);

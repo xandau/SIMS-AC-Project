@@ -3,6 +3,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TicketComponent } from './ticket/ticket.component';
 import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
@@ -13,6 +14,11 @@ export const routes: Routes = [
     path: 'dashboard', 
     component: DashboardComponent, 
     canActivate: [AuthGuard]  // Protected route
+  },
+  { 
+    path: 'tickets', 
+    component: TicketComponent, 
+    canActivate: [AuthGuard]  // Protect tickets with AuthGuard
   },
   { path: '**', redirectTo: '' }  // Redirect any unknown routes to the home page
 ];
