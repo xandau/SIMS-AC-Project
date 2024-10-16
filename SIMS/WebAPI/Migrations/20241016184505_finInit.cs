@@ -59,7 +59,6 @@ namespace WebAPI.Migrations
                     CREATION_TIME = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Severity = table.Column<byte>(type: "tinyint", nullable: false),
                     CVE = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TIMESTAMP = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATOR_ID = table.Column<long>(type: "bigint", nullable: false),
                     ASSIGNEDPERSON_ID = table.Column<long>(type: "bigint", nullable: true)
                 },

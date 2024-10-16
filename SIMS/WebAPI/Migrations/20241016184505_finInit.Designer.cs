@@ -12,7 +12,7 @@ using WebAPI;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(SIMSContext))]
-    [Migration("20241016182049_finInit")]
+    [Migration("20241016184505_finInit")]
     partial class finInit
     {
         /// <inheritdoc />
@@ -156,10 +156,6 @@ namespace WebAPI.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int")
                         .HasColumnName("STATE");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("TIMESTAMP");
 
                     b.Property<string>("Title")
                         .IsRequired()

@@ -154,10 +154,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("STATE");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("TIMESTAMP");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)

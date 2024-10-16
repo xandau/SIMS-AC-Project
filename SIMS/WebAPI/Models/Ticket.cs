@@ -23,22 +23,17 @@ namespace WebAPI.Models
         [Column("STATE")]
         public required ETicketState State { get; set; } = ETicketState.OPEN;
 
-        [Required]
         [Column("CREATION_TIME")]
-        public required DateTime CreationTime { get; set; }
+        public DateTime CreationTime { get; set; }
 
         [Required]
-        [Column("Severity")]
+        [Column("SEVERITY")]
         [Range(1, 10)]
         public required byte Severity { get; set; }
 
         [Required]
         [Column("CVE")]
         public required string CVE { get; set; }
-
-        [Required]
-        [Column("TIMESTAMP")]
-        public required DateTime Timestamp { get; set; }
 
 
         [Column("CREATOR_ID")]
