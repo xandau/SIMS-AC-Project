@@ -33,19 +33,6 @@ namespace WebAPI.Repository
         {
             User? entity = await _entities.Include(u => u.CreatedTickets).FirstAsync(u => u.ID == id);
 
-            if (entity != null)
-            {
-                Console.WriteLine($"User: {entity.UserName}");
-                foreach (Ticket ticket in entity.CreatedTickets)
-                {
-                    Console.WriteLine($"  Ticket: {ticket.Title}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("User not found.");
-            }
-
             if (entity is not null)
             {
                 _logEntry.Add(new LogEntry()

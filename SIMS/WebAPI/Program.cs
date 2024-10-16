@@ -19,7 +19,8 @@ namespace WebAPI
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                // Json-Error für Cycle-Object - so wird Fehler ignoriert
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -38,6 +39,7 @@ namespace WebAPI
             builder.Services.AddScoped<IRepository<Ticket>, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
             builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<TicketRepository>();
 
             // JWT and Authentication setup
             var jwtSettings = config.GetSection("JWTSettings");

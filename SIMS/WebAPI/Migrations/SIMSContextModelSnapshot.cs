@@ -154,10 +154,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("STATE");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("TIMESTAMP");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -177,13 +173,12 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("User", "AssignedPerson")
                         .WithMany("AssignedTickets")
-                        .HasForeignKey("AssignedPersonID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("AssignedPersonID");
 
                     b.HasOne("User", "Creator")
                         .WithMany("CreatedTickets")
                         .HasForeignKey("CreatorID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AssignedPerson");
