@@ -1,8 +1,5 @@
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -28,26 +25,26 @@ namespace WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Load secrets for database connection
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
             IConfigurationProvider secretProvider = config.Providers.First();
             secretProvider.TryGet("ConnectionStrings:SQL", out var secretData);
 
-            // DbContext registrieren
+            // Register DbContext
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
 
-            // Add Repository Pattern
-            
+            // Register repositories
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<IRepository<Ticket>, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
-            
             builder.Services.AddScoped<UserRepository>();
+
+            // JWT and Authentication setup
+            var jwtSettings = config.GetSection("JWTSettings");
+            var secretKey = jwtSettings["Secret"];
 
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<RedisTokenStore>();
-
-            var jwtSettings = config.GetSection("JWTSettings");
-            var secretKey = jwtSettings["Secret"];
 
             builder.Services.AddAuthentication(cfg =>
             {
@@ -68,6 +65,14 @@ namespace WebAPI
                 };
             });
 
+            // Add and configure CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    policy => policy.WithOrigins("http://localhost:4200")
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod());
+            });
 
             var app = builder.Build();
 
@@ -80,9 +85,12 @@ namespace WebAPI
 
             app.UseHttpsRedirection();
 
+            // Apply CORS policy
+            app.UseCors("AllowSpecificOrigin");
+
+            // Authentication and Authorization middleware
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 
