@@ -246,3 +246,8 @@ ModelManifest.xml
 .fake/
 docker/sql/mastlog.ldf
 SIMS/AngularClient/hello-world/.angular/cache/18.2.8/hello-world/.tsbuildinfo
+docker/sql/mastlog.ldf
+docker/sql/model.mdf
+docker/sql/modellog.ldf
+docker/sql/SIMS.mdf
+docker/sql/SIMS_log.ldf
