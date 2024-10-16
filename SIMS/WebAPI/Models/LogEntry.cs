@@ -4,13 +4,8 @@ using System.ComponentModel.DataAnnotations;
 namespace WebAPI.Models
 {
     [Table("LOG_ENTRIES")]
-    public class LogEntry
+    public class LogEntry : AItem
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("LOG_ENTRY_ID")]
-        public long LogEntryID{ get; set; }
-
         [Required]
         [Column("TIMESTAMP")]
         public required DateTime Timestamp { get; set; }

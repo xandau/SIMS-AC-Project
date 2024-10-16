@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class authInit : Migration
+    public partial class finInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace WebAPI.Migrations
                 name: "LOG_ENTRIES",
                 columns: table => new
                 {
-                    LOG_ENTRY_ID = table.Column<long>(type: "bigint", nullable: false)
+                    ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TIMESTAMP = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LEVEL = table.Column<int>(type: "int", nullable: false),
@@ -23,14 +23,14 @@ namespace WebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LOG_ENTRIES", x => x.LOG_ENTRY_ID);
+                    table.PrimaryKey("PK_LOG_ENTRIES", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "USERS",
                 columns: table => new
                 {
-                    UserID = table.Column<long>(type: "bigint", nullable: false)
+                    ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     User_UUID = table.Column<string>(type: "VARCHAR(300)", nullable: true),
                     USERNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -44,37 +44,49 @@ namespace WebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_USERS", x => x.UserID);
+                    table.PrimaryKey("PK_USERS", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TICKETS",
                 columns: table => new
                 {
-                    TICKET_ID = table.Column<long>(type: "bigint", nullable: false)
+                    ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TITLE = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DESCRIPTION = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     STATE = table.Column<int>(type: "int", nullable: false),
                     CREATION_TIME = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATOR_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorUserID = table.Column<long>(type: "bigint", nullable: false)
+                    Severity = table.Column<byte>(type: "tinyint", nullable: false),
+                    CVE = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TIMESTAMP = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CREATOR_ID = table.Column<long>(type: "bigint", nullable: false),
+                    ASSIGNEDPERSON_ID = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TICKETS", x => x.TICKET_ID);
+                    table.PrimaryKey("PK_TICKETS", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_TICKETS_USERS_CreatorUserID",
-                        column: x => x.CreatorUserID,
+                        name: "FK_TICKETS_USERS_ASSIGNEDPERSON_ID",
+                        column: x => x.ASSIGNEDPERSON_ID,
                         principalTable: "USERS",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_TICKETS_USERS_CREATOR_ID",
+                        column: x => x.CREATOR_ID,
+                        principalTable: "USERS",
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TICKETS_CreatorUserID",
+                name: "IX_TICKETS_ASSIGNEDPERSON_ID",
                 table: "TICKETS",
-                column: "CreatorUserID");
+                column: "ASSIGNEDPERSON_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TICKETS_CREATOR_ID",
+                table: "TICKETS",
+                column: "CREATOR_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_USERS_EMAIL",

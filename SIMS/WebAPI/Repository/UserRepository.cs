@@ -29,6 +29,36 @@ namespace WebAPI.Repository
             return await _entities.Where(u => u.UserName == username).FirstAsync();
         }
 
+        public override async Task<User> GetAsync(long id)
+        {
+            User? entity = await _entities.Include(u => u.CreatedTickets).FirstAsync(u => u.ID == id);
+
+            if (entity != null)
+            {
+                Console.WriteLine($"User: {entity.UserName}");
+                foreach (Ticket ticket in entity.CreatedTickets)
+                {
+                    Console.WriteLine($"  Ticket: {ticket.Title}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("User not found.");
+            }
+
+            if (entity is not null)
+            {
+                _logEntry.Add(new LogEntry()
+                {
+                    Level = LogLevel.Information,
+                    Timestamp = DateTime.Now,
+                    Message = $"Element of type {entity.GetType().Name} with ID \"{entity.ID}\" read"
+                });
+                await _context.SaveChangesAsync();
+            }
+            return entity;
+        }
+
         public override async Task<User> CreateAsync(User entity)
         {
             // Validate the user entity

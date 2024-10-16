@@ -5,7 +5,7 @@ namespace WebAPI
 {
     public class SIMSContext : DbContext
     {
-        public DbSet<WebAPI.Models.LogEntry> logEntries { get; set; }
+        public DbSet<LogEntry> logEntries { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<User> Users { get; set; }
 
@@ -18,6 +18,22 @@ namespace WebAPI
         {
             modelBuilder.Entity<User>().HasIndex(a => a.UserName).IsUnique();
             modelBuilder.Entity<User>().HasIndex(a => a.Email).IsUnique();
+
+            modelBuilder.Entity<User>().HasKey(a => a.ID);
+            modelBuilder.Entity<Ticket>().HasKey(a => a.ID);
+            modelBuilder.Entity<LogEntry>().HasKey(a => a.ID);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.CreatedTickets)
+                .WithOne(t => t.Creator)
+                .HasForeignKey(t => t.CreatorID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.AssignedTickets)
+                .WithOne(t => t.AssignedPerson)
+                .HasForeignKey(t => t.AssignedPersonID)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

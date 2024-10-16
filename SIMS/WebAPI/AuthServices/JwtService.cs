@@ -27,7 +27,7 @@ namespace WebAPI.AuthServices
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserID.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.ID.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
 
