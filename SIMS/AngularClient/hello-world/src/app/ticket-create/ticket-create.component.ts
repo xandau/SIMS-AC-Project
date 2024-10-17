@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-ticket-create',
@@ -39,29 +40,34 @@ export class TicketCreateComponent {
     private cookieService: CookieService
   ) {
     this.ticketForm = this.fb.group({
-      TITLE: ['', [Validators.required]],
-      DESCRIPTION: ['', [Validators.required]],
-      STATE: [2, [Validators.required]],  // Default state for new tickets, required
-      CREATORID: [1],  // Assuming current user ID is 1
-      Severity: [5],
-      CVE: [''],
+      TITLE: ['', [Validators.required]],                   // Required
+      DESCRIPTION: ['', [Validators.required]],             // Required
+      STATE: [2, [Validators.required]],                    // Required, default to 2
+      Severity: [5, [Validators.required]],                 // Required
+      CVE: ['', [Validators.required]],                     // Required
+      assignedPersonID: ['', [Validators.required]],        // New required field
     });
   }
 
   onSubmit() {
     if (this.ticketForm.valid) {
+      // Retrieve the JWT token from the cookies
+      const token = this.cookieService.get('accessToken');
+
+      // Decode the JWT to extract the user ID (sub)
+      const decodedToken: any = jwtDecode(token);
+      const userId = decodedToken?.sub;
+
       // Prepare the ticket data
       const ticketData = {
         TITLE: this.ticketForm.get('TITLE')?.value,
         DESCRIPTION: this.ticketForm.get('DESCRIPTION')?.value,
         STATE: parseInt(this.ticketForm.get('STATE')?.value, 10),  // Ensure STATE is sent as a number
-        CREATORID: this.ticketForm.get('CREATORID')?.value,
+        CREATORID: userId,  // Use the decoded user ID (sub)
         Severity: this.ticketForm.get('Severity')?.value,
-        CVE: this.ticketForm.get('CVE')?.value
+        CVE: this.ticketForm.get('CVE')?.value,
+        assignedPersonID: this.ticketForm.get('assignedPersonID')?.value, // New field
       };
-
-      // Retrieve the JWT token from the cookies
-      const token = this.cookieService.get('accessToken');
 
       // Set the headers with the Bearer token
       const headers = new HttpHeaders({
@@ -69,11 +75,8 @@ export class TicketCreateComponent {
         'Content-Type': 'application/json'
       });
 
-      // Convert the ticketData object to JSON using JSON.stringify
-      const jsonTicketData = JSON.stringify(ticketData);
-
       // Make the HTTP POST request with the Bearer token in the headers and JSON payload
-      this.http.post('https://localhost:7292/ticket', jsonTicketData, { headers }).subscribe({
+      this.http.post('https://localhost:7292/ticket', JSON.stringify(ticketData), { headers }).subscribe({
         next: (response: any) => {
           console.log('Ticket created successfully!', response);
           this.isSuccess = true;  // Mark as successful creation

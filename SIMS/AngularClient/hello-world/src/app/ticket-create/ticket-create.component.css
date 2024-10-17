@@ -81,3 +81,7 @@
     text-align: center; /* Center the error message */
   }
   
+  .success-message {
+    color: white;
+  }
+  

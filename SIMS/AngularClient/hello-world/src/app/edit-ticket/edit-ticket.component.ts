@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -19,6 +20,7 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatSelectModule,
     CommonModule,
+    MatCardModule,
     ReactiveFormsModule  // Ensure ReactiveFormsModule is imported here
   ],
   templateUrl: './edit-ticket.component.html',
@@ -31,6 +33,7 @@ export class EditTicketComponent implements OnInit {
   isError = false;
   errorMessage: string = '';
   userId: number;
+  creatorID: number = 0;  // Store the creator ID
 
   // Enum for ticket states
   stateEnum = [
@@ -81,6 +84,7 @@ export class EditTicketComponent implements OnInit {
         // Check if the current user is the creator or assigned person
         if (response.creatorID === this.userId || response.assignedPersonID === this.userId) {
           this.ticketForm.patchValue(response);
+          this.creatorID = response.creatorID;  // Store the creatorID for later use
           this.isLoading = false;
         } else {
           // If the user is not allowed to access the ticket, redirect or show an error
@@ -107,7 +111,14 @@ export class EditTicketComponent implements OnInit {
         'Content-Type': 'application/json'
       });
 
-      this.http.put(`https://localhost:7292/ticket/${this.ticketId}`, this.ticketForm.value, { headers }).subscribe({
+      // Include the ticketId as 'id' and the 'creatorID' in the payload
+      const updatedTicketData = {
+        ...this.ticketForm.value,  // Spread the form values (title, description, etc.)
+        id: this.ticketId,         // Send ticketId as id
+        creatorID: this.creatorID  // Include the original creatorID
+      };
+
+      this.http.put(`https://localhost:7292/ticket/${this.ticketId}`, updatedTicketData, { headers }).subscribe({
         next: (response: any) => {
           console.log('Ticket updated successfully!', response);
           this.router.navigate(['/created-tickets']);  // Redirect back to created tickets page after update

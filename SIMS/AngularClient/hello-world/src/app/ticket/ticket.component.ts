@@ -14,6 +14,12 @@ import { Router } from '@angular/router';
         <h3>Created Tickets</h3>
         <p>Click here to view your created tickets.</p>
       </div>
+
+      <!-- Ticket Panel -->
+      <div class="panel" (click)="goToassignedTickets()">
+        <h3>Assigned Tickets</h3>
+        <p>Click here to view your created tickets.</p>
+      </div>
     </div>
   `,
   styles: [`
@@ -37,6 +43,10 @@ export class TicketComponent {
   constructor(private router: Router) {}
 
   goTocreatedTickets() {
+    this.router.navigate(['/created-tickets']);
+  }
+
+  goToassignedTickets() {
     this.router.navigate(['/created-tickets']);
   }
 }

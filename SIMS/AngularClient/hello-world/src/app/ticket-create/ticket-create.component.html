@@ -1,67 +1,38 @@
-<div class="modal-container">
-    <mat-card class="create-ticket-card">
-      <h2>Create New Ticket</h2>
-  
-      <!-- Success message and countdown after ticket creation -->
-      <div *ngIf="isSuccess">
-        <p>Ticket created successfully! Redirecting to Dashboard in {{ countdown }} seconds...</p>
-      </div>
-  
-      <!-- Ticket creation form -->
-      <form *ngIf="!isSuccess" [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
-        <!-- Title Field -->
-        <mat-form-field appearance="fill">
-          <mat-label>Title</mat-label>
-          <input matInput formControlName="TITLE" />
-          <mat-error *ngIf="ticketForm.get('TITLE')?.invalid && ticketForm.get('TITLE')?.touched">
-            Title is required.
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Description Field -->
-        <mat-form-field appearance="fill">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="DESCRIPTION"></textarea>
-          <mat-error *ngIf="ticketForm.get('DESCRIPTION')?.invalid && ticketForm.get('DESCRIPTION')?.touched">
-            Description is required.
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Severity Field -->
-        <mat-form-field appearance="fill">
-          <mat-label>Severity</mat-label>
-          <input matInput formControlName="Severity" type="number" />
-        </mat-form-field>
-  
-        <!-- CVE Field -->
-        <mat-form-field appearance="fill">
-          <mat-label>CVE</mat-label>
-          <input matInput formControlName="CVE" />
-        </mat-form-field>
-  
-        <!-- State Dropdown -->
-        <mat-form-field appearance="fill">
-          <mat-label>State</mat-label>
-          <mat-select formControlName="STATE">
-            <mat-option value="1">Open</mat-option>
-            <mat-option value="2">In Progress</mat-option>
-            <mat-option value="3">Closed</mat-option>
-          </mat-select>
-          <mat-error *ngIf="ticketForm.get('STATE')?.invalid && ticketForm.get('STATE')?.touched">
-            State is required.
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Submit Button -->
-        <button mat-raised-button color="primary" type="submit" [disabled]="ticketForm.invalid">
-          Create Ticket
-        </button>
-      </form>
-  
-      <!-- Error message if something goes wrong -->
-      <div *ngIf="isError" class="error-message">
-        <p>Something went wrong. Please try again.</p>
-      </div>
-    </mat-card>
-  </div>
-  
+<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+  <mat-card>
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="TITLE" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="DESCRIPTION" required></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Severity</mat-label>
+      <input matInput type="number" formControlName="Severity" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>CVE</mat-label>
+      <input matInput formControlName="CVE" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Assigned Person ID</mat-label>
+      <input matInput formControlName="assignedPersonID" required />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="ticketForm.invalid">Create Ticket</button>
+
+    <div *ngIf="isSuccess" class="success-message">
+      Ticket created successfully! Redirecting to the dashboard in {{ countdown }} seconds.
+    </div>
+    
+    <div *ngIf="isError">
+      {{ errorMessage }}
+    </div>
+  </mat-card>
+</form>
