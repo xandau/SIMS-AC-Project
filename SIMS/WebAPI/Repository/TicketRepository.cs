@@ -1,13 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using WebAPI.AuthServices;
 using WebAPI.Models;
 
 namespace WebAPI.Repository
 {
-    public class TicketRepository : ARepository<Ticket>
-    {
+    public class TicketRepository : ARepository<Ticket>, ITicketRepository
+    {    
+        private JwtService jwtService;
+
         public TicketRepository(SIMSContext context) : base(context)
         {
             _context = context;
+            jwtService = new JwtService();
         }
 
         public override async Task<Ticket> GetAsync(long id)
@@ -44,6 +50,18 @@ namespace WebAPI.Repository
             _entities.Add(ticket);
             await _context.SaveChangesAsync();
             return ticket;
+        }
+
+        public async Task<List<Ticket>> GetAssignedTickets(string access_token)
+        {
+            long id = jwtService.GetClaimsFromToken(access_token);
+            return await _entities.Where(t => t.AssignedPersonID == id).ToListAsync();
+        }
+
+        public async Task<List<Ticket>> GetCreatedTickets(string access_token)
+        {
+            long id = jwtService.GetClaimsFromToken(access_token);
+            return await _entities.Where(t => t.CreatorID == id).ToListAsync();
         }
     }
 }

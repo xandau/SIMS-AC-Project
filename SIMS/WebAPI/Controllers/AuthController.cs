@@ -11,31 +11,35 @@ namespace WebAPI.Controllers
     [Route("auth")]
     public class AuthController : ControllerBase
     {
+        private readonly AuthRepository _authRepository;
+
         private readonly JwtService _jwtService;
         private readonly RedisTokenStore _redisTokenStore;
         private readonly UserRepository _userRepository;
 
-        public AuthController(JwtService jwtservice, RedisTokenStore redisTokenStore, UserRepository userRepository)
+        public AuthController(JwtService jwtservice, RedisTokenStore redisTokenStore, UserRepository userRepository, AuthRepository authRepository)
         {
             _jwtService = jwtservice;
             _redisTokenStore = redisTokenStore;
             _userRepository = userRepository;
+
+            _authRepository = authRepository;
         }
+
+        // TODO: Logik in Repo auslagern
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO login)
         {
-            Console.WriteLine(login.Email + " " + login.Password);
-            User user = await _userRepository.GetUserByMailAsync(login.Email, login.Password);
-            if (user == null)
-                return Unauthorized("Invalid Credentials");
-
-            var accessToken = _jwtService.GenerateAccessToken(user);
-            var refreshToken = _jwtService.GenerateRefreshToken();
-
-            await _redisTokenStore.StoreRefreshTokenAsync(user.ID, user.UserName, refreshToken);
-
-            return Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
+            try
+            {
+                object tokens = _authRepository.Login(login.Email, login.Password);
+                return Ok(tokens);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("refresh")]
