@@ -49,8 +49,9 @@
       <mat-form-field appearance="fill">
         <mat-label>Role</mat-label>
         <mat-select formControlName="role">
-          <mat-option value="1">Admin</mat-option>
-          <mat-option value="2">User</mat-option>
+          <mat-option *ngFor="let role of roles" [value]="role.value">
+            {{ role.label }}
+          </mat-option>
         </mat-select>
         <mat-error *ngIf="editUserForm.get('role')?.invalid && editUserForm.get('role')?.touched">
           Role is required.

@@ -5,8 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select'; // Import MatSelectModule for dropdown
-import { MatCheckboxModule } from '@angular/material/checkbox'; // Import MatCheckboxModule for checkbox
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -17,8 +17,8 @@ import { CookieService } from 'ngx-cookie-service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule, // Add MatSelectModule here
-    MatCheckboxModule, // Add MatCheckboxModule for the checkbox
+    MatSelectModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     CommonModule
   ],
@@ -32,6 +32,12 @@ export class EditUserComponent implements OnInit {
   isError = false;
   errorMessage: string = '';
 
+  // Enum-like mapping for user roles
+  roles = [
+    { value: 1, label: 'USER' },
+    { value: 2, label: 'ADMIN' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -44,7 +50,7 @@ export class EditUserComponent implements OnInit {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      role: ['', [Validators.required]],
+      role: ['', [Validators.required]],  // Role field uses the enum mapping
       blocked: [false]
     });
 
@@ -55,6 +61,7 @@ export class EditUserComponent implements OnInit {
     this.fetchUserDetails();
   }
 
+  // Fetch the current user details based on userId
   fetchUserDetails() {
     const token = this.cookieService.get('accessToken');
     const headers = new HttpHeaders({
@@ -76,6 +83,7 @@ export class EditUserComponent implements OnInit {
     });
   }
 
+  // Handle form submission to update user details
   onSubmit() {
     if (this.editUserForm.valid) {
       const token = this.cookieService.get('accessToken');
@@ -86,6 +94,7 @@ export class EditUserComponent implements OnInit {
 
       const updatedUserData = this.editUserForm.value;
 
+      // Send the form data with the correct role value
       this.http.put(`https://localhost:7292/user/${this.userId}`, updatedUserData, { headers }).subscribe({
         next: (response: any) => {
           console.log('User updated successfully!', response);
