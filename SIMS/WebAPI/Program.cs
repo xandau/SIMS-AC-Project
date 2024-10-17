@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using WebAPI.AuthServices;
+using WebAPI.Enums;
+using WebAPI.Middlewares;
 using WebAPI.Models;
 using WebAPI.Repository;
 
@@ -77,6 +82,9 @@ namespace WebAPI
             });
 
             var app = builder.Build();
+
+            // Middleware - differ between ADMIN and USER in /user
+            app.UseMiddleware<RoleMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
