@@ -92,9 +92,12 @@ export class EditUserComponent implements OnInit {
         'Content-Type': 'application/json'
       });
 
-      const updatedUserData = this.editUserForm.value;
+      const updatedUserData = {
+        ...this.editUserForm.value,  // Spread the form values (userName, firstName, lastName, etc.)
+        id: this.userId          // Add userId to the payload explicitly
+      };
 
-      // Send the form data with the correct role value
+      // Send the form data with the correct role value and userId
       this.http.put(`https://localhost:7292/user/${this.userId}`, updatedUserData, { headers }).subscribe({
         next: (response: any) => {
           console.log('User updated successfully!', response);

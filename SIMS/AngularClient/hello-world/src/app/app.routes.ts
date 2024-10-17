@@ -5,8 +5,10 @@ import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TicketComponent } from './ticket/ticket.component';
 import { TicketCreateComponent } from './ticket-create/ticket-create.component'; 
+import { CreatedTicketsComponent } from './created-tickets/created-tickets.component'; 
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
+import { EditTicketComponent } from './edit-ticket/edit-ticket.component';
 import { UserGuard } from './user.guard'; 
 import { AdminGuard } from './admin.guard'; 
 
@@ -39,6 +41,16 @@ export const routes: Routes = [
     path: 'user/edit/:userId', 
     component: EditUserComponent, 
     canActivate: [AdminGuard]  
+  },
+  {
+    path: 'created-tickets',  
+    component: CreatedTicketsComponent,
+    canActivate: [UserGuard],
+  },
+  {
+    path: 'ticket/edit/:ticketId',  
+    component: EditTicketComponent,
+    canActivate: [UserGuard],
   },
   { path: '**', redirectTo: '' }
 ];
