@@ -15,11 +15,26 @@ namespace WebAPI.Controllers
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Entity>> ReadAsync([Required] int id)
-            => Ok(await _repository.GetAsync(id));
+        {
+            Entity? e = await _repository.GetAsync(id);
+
+            if (e == null)
+                return UnprocessableEntity();
+            else 
+                return Ok(e);
+        }
+
 
         [HttpGet]
-        public async Task<ActionResult<List<Entity>>> ReadAllAsync()  
-            => Ok(await _repository.GetAllAsync());
+        public async Task<ActionResult<List<Entity>>> ReadAllAsync()
+        {
+            List<Entity>? e = await _repository.GetAllAsync();
+
+            if (e is null)
+                return UnprocessableEntity();
+            else
+                return Ok(e);
+        } 
 
         [HttpPost]
         public async Task<ActionResult> CreateAsync([Required] Entity entity)
@@ -33,7 +48,7 @@ namespace WebAPI.Controllers
         {
             var e = await _repository.GetAsync(id);
             if (e is null)
-                return NotFound();
+                return UnprocessableEntity();
 
             await _repository.UpdateAsync(entity);
             return NoContent();
@@ -44,7 +59,7 @@ namespace WebAPI.Controllers
         {
             var e = await _repository.GetAsync(id);
             if (e is null)
-                return NotFound();
+                return UnprocessableEntity();
             await _repository.DeleteAsync(e);
             return NoContent();
         }

@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using WebAPI.AuthServices;
@@ -26,14 +27,12 @@ namespace WebAPI.Controllers
             _authRepository = authRepository;
         }
 
-        // TODO: Logik in Repo auslagern
-
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO login)
         {
             try
             {
-                object tokens = _authRepository.Login(login.Email, login.Password);
+                object tokens = await _authRepository.Login(login.Email, login.Password);
                 return Ok(tokens);
             }
             catch (Exception ex) 
@@ -45,19 +44,20 @@ namespace WebAPI.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(RefreshTokenDTO refresh_token)
         {
-            var entry = await _redisTokenStore.GetUserFromRefreshToken(refresh_token.Token);
-            if (entry.Length != 2)
-                return Unauthorized("Invalid refresh token");
-
-            User user = await _userRepository.GetUserByUsernameAsync(entry[1].Value.ToString());
-
-            var accessToken = _jwtService.GenerateAccessToken(user);
-            var newRefreshToken = _jwtService.GenerateRefreshToken();
-
-            if (_redisTokenStore.RemoveRefreshTokenAsync(refresh_token.Token).Result == true)
-                _redisTokenStore?.StoreRefreshTokenAsync(user.ID, user.UserName, newRefreshToken);
-            
-            return Ok(new { AccessToken = accessToken, RefreshToken = newRefreshToken });
+            try
+            {
+                if (refresh_token.Token != "")
+                {
+                    object tokens = await _authRepository.Refresh(refresh_token.Token);
+                    return Ok(tokens);
+                }
+                else
+                    return BadRequest("No Refresh Token provided");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("register")]
