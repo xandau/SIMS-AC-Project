@@ -29,5 +29,23 @@ namespace WebAPI.Repository
 
             return new { AccessToken = accessToken, RefreshToken = refreshToken };
         }
+
+        public async Task<object> Refresh(string refresh_token)
+        {
+            var entry = await _redisTokenStore.GetUserFromRefreshToken(refresh_token);
+            
+            if (entry.Length != 2)
+                throw new Exception("Invalid refresh token");
+
+            User? user = await _userRepository.GetUserByUsernameAsync(entry[1].Value.ToString());
+
+            var accessToken = _jwtService.GenerateAccessToken(user);
+            var newRefreshToken = _jwtService.GenerateRefreshToken();
+
+            if (_redisTokenStore.RemoveRefreshTokenAsync(refresh_token).Result == true)
+                _redisTokenStore?.StoreRefreshTokenAsync(user.ID, user.UserName, newRefreshToken);
+
+            return new { AccessToken = accessToken, RefreshToken = newRefreshToken };
+        }
     }
 }

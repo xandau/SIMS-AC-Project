@@ -67,7 +67,7 @@ namespace WebAPI.AuthServices
 
                 return Convert.ToInt64(claimsPrincipal.Claims.FirstOrDefault().Value);
             }
-            catch (Exception ex)
+            catch 
             {
                 return 0;
             }

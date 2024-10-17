@@ -36,11 +36,10 @@ namespace WebAPI
 
             // Register repositories
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
-            // new
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
             builder.Services.AddScoped<UserRepository>();
-            builder.Services.AddScoped<TicketRepository>();
+            builder.Services.AddScoped<AuthRepository>();
 
             // JWT and Authentication setup
             var jwtSettings = config.GetSection("JWTSettings");

@@ -18,7 +18,12 @@ namespace WebAPI.Repository
 
         public override async Task<Ticket> GetAsync(long id)
         {
-            Ticket? entity = await _entities.Include(t => t.Creator).FirstAsync(u => u.ID == id);
+            Ticket? entity = null;
+
+            if (_entities.Count() == 0)
+                return null;
+
+            entity = await _entities.Include(t => t.Creator).FirstAsync(u => u.ID == id);
 
             if (entity is not null)
             {
@@ -55,13 +60,19 @@ namespace WebAPI.Repository
         public async Task<List<Ticket>> GetAssignedTickets(string access_token)
         {
             long id = jwtService.GetClaimsFromToken(access_token);
-            return await _entities.Where(t => t.AssignedPersonID == id).ToListAsync();
+            if (id == 0)
+                throw new Exception("No Identifier Found");
+            else
+                return await _entities.Where(t => t.AssignedPersonID == id).ToListAsync();
         }
 
         public async Task<List<Ticket>> GetCreatedTickets(string access_token)
         {
             long id = jwtService.GetClaimsFromToken(access_token);
-            return await _entities.Where(t => t.CreatorID == id).ToListAsync();
+            if (id == 0)
+                throw new Exception("No Identifier Found");
+            else
+                return await _entities.Where(t => t.CreatorID == id).ToListAsync();
         }
     }
 }

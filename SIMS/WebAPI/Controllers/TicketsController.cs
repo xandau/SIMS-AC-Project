@@ -27,7 +27,17 @@ namespace WebAPI.Controllers
                 return BadRequest("Access Token not found");
             }
             else
-                return Ok(await _ticketRepository.GetAssignedTickets(accessToken));
+            {
+                try
+                {
+                    return Ok(await _ticketRepository.GetAssignedTickets(accessToken));
+                }
+                catch (Exception ex)
+                {
+
+                    return UnprocessableEntity(ex.Message);
+                }
+            }
         }
 
         [HttpGet("created")]
@@ -40,7 +50,18 @@ namespace WebAPI.Controllers
                 return BadRequest("Access Token not found");
             }
             else
-                return Ok(await _ticketRepository.GetCreatedTickets(accessToken));
+            {
+                try
+                {
+                    return Ok(await _ticketRepository.GetCreatedTickets(accessToken));
+                }
+                catch (Exception ex)
+                {
+
+                    return UnprocessableEntity(ex.Message);
+                }
+            }
+                
         }
     }
 }
