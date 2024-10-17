@@ -148,7 +148,7 @@ namespace WebAPI.Migrations
 
                     b.Property<byte>("Severity")
                         .HasColumnType("tinyint")
-                        .HasColumnName("Severity");
+                        .HasColumnName("SEVERITY");
 
                     b.Property<int>("State")
                         .HasColumnType("int")

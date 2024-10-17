@@ -36,7 +36,8 @@ namespace WebAPI
 
             // Register repositories
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
-            builder.Services.AddScoped<IRepository<Ticket>, TicketRepository>();
+            // new
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<TicketRepository>();

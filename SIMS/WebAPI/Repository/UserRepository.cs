@@ -68,6 +68,15 @@ namespace WebAPI.Repository
 
                 _entities.Add(user);
                 await _context.SaveChangesAsync();
+
+                _logEntry.Add(new LogEntry()
+                {
+                    Level = LogLevel.Information,
+                    Timestamp = DateTime.Now,
+                    Message = $"{entity.GetType().Name} with ID \"{entity.ID}\" created"
+                });
+                await _context.SaveChangesAsync();
+
                 return user;
             }
             catch (DbUpdateException ex) when (ex.InnerException is Microsoft.Data.SqlClient.SqlException sqlEx)
@@ -87,6 +96,7 @@ namespace WebAPI.Repository
             }
         }
 
+        // private Methods
         private void ValidateUser(User user)
         {
             var validationContext = new ValidationContext(user);

@@ -22,10 +22,11 @@ namespace WebAPI.Controllers
             _userRepository = userRepository;
         }
 
+        // TODO: Logik in Repo auslagern
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO login)
         {
-            Console.WriteLine(login.Email + " " + login.Password);
             User user = await _userRepository.GetUserByMailAsync(login.Email, login.Password);
             if (user == null)
                 return Unauthorized("Invalid Credentials");

@@ -45,18 +45,8 @@ public class User : AItem
     [Column("BLOCKED")]
     public bool? Blocked { get; set; }
 
-    
-    
-    
-    
-    
     public virtual List<Ticket>? CreatedTickets { get; set; } 
-    public virtual List<Ticket>? AssignedTickets { get; set; } 
-
-    
-    
-    
-    
+    public virtual List<Ticket>? AssignedTickets { get; set; }     
     
     [NotMapped]
     public string Password { get; set; }
