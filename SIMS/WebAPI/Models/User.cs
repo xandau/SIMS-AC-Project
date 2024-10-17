@@ -49,7 +49,7 @@ public class User : AItem
     public virtual List<Ticket>? AssignedTickets { get; set; }     
     
     [NotMapped]
-    public string Password { get; set; }
+    public string? Password { get; set; }
 
     //method for hashing passwords
     public void SetPassword(string password)
