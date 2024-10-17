@@ -1,0 +1,69 @@
+<div class="edit-user-container">
+    <h2>Edit User</h2>
+  
+    <!-- Show loading indicator while data is being fetched -->
+    <div *ngIf="isLoading">Loading user details...</div>
+  
+    <!-- Error message if something goes wrong -->
+    <div *ngIf="isError" class="error-message">{{ errorMessage }}</div>
+  
+    <!-- User edit form -->
+    <form *ngIf="!isLoading" [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+      <!-- Username Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="userName" />
+        <mat-error *ngIf="editUserForm.get('userName')?.invalid && editUserForm.get('userName')?.touched">
+          Username is required.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- First Name Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" />
+        <mat-error *ngIf="editUserForm.get('firstName')?.invalid && editUserForm.get('firstName')?.touched">
+          First name is required.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Last Name Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" />
+        <mat-error *ngIf="editUserForm.get('lastName')?.invalid && editUserForm.get('lastName')?.touched">
+          Last name is required.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Email Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+        <mat-error *ngIf="editUserForm.get('email')?.invalid && editUserForm.get('email')?.touched">
+          A valid email is required.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Role Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value="1">Admin</mat-option>
+          <mat-option value="2">User</mat-option>
+        </mat-select>
+        <mat-error *ngIf="editUserForm.get('role')?.invalid && editUserForm.get('role')?.touched">
+          Role is required.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Blocked Field -->
+      <mat-checkbox formControlName="blocked">Blocked</mat-checkbox>
+  
+      <!-- Submit Button -->
+      <button mat-raised-button color="primary" type="submit" [disabled]="editUserForm.invalid">
+        Update User
+      </button>
+    </form>
+  </div>
+  

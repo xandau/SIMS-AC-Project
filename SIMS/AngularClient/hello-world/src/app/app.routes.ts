@@ -4,9 +4,10 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TicketComponent } from './ticket/ticket.component';
-import { TicketCreateComponent } from './ticket-create/ticket-create.component'; // Import the correct component
+import { TicketCreateComponent } from './ticket-create/ticket-create.component'; 
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { AuthGuard } from './auth.guard';  // Import AuthGuard if necessary
+import { EditUserComponent } from './edit-user/edit-user.component';
+import { AuthGuard } from './auth.guard'; 
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,13 +26,18 @@ export const routes: Routes = [
   { 
     path: 'create-ticket', 
     
-    component: TicketCreateComponent, // Reference the correct component name
-    canActivate: [AuthGuard]  // Protect if necessary
+    component: TicketCreateComponent, 
+    canActivate: [AuthGuard]  
   },
   {
     path: 'admin-dashboard', 
-    component: AdminDashboardComponent, // Reference the correct component name
-    canActivate: [AuthGuard]  // Protect if necessary
+    component: AdminDashboardComponent, 
+    canActivate: [AuthGuard]  
+  },
+  {
+    path: 'user/edit/:userId', 
+    component: EditUserComponent, 
+    canActivate: [AuthGuard]  
   },
   { path: '**', redirectTo: '' }
 ];
