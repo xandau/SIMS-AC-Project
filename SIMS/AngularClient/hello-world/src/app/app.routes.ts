@@ -7,7 +7,8 @@ import { TicketComponent } from './ticket/ticket.component';
 import { TicketCreateComponent } from './ticket-create/ticket-create.component'; 
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
-import { AuthGuard } from './auth.guard'; 
+import { UserGuard } from './user.guard'; 
+import { AdminGuard } from './admin.guard'; 
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,28 +17,28 @@ export const routes: Routes = [
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
-    canActivate: [AuthGuard] 
+    canActivate: [UserGuard] 
   },
   { 
     path: 'tickets', 
     component: TicketComponent, 
-    canActivate: [AuthGuard] 
+    canActivate: [UserGuard] 
   },
   { 
     path: 'create-ticket', 
     
     component: TicketCreateComponent, 
-    canActivate: [AuthGuard]  
+    canActivate: [UserGuard]  
   },
   {
     path: 'admin-dashboard', 
     component: AdminDashboardComponent, 
-    canActivate: [AuthGuard]  
+    canActivate: [AdminGuard]  
   },
   {
     path: 'user/edit/:userId', 
     component: EditUserComponent, 
-    canActivate: [AuthGuard]  
+    canActivate: [AdminGuard]  
   },
   { path: '**', redirectTo: '' }
 ];
