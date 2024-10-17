@@ -5,6 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TicketComponent } from './ticket/ticket.component';
 import { TicketCreateComponent } from './ticket-create/ticket-create.component'; // Import the correct component
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AuthGuard } from './auth.guard';  // Import AuthGuard if necessary
 
 export const routes: Routes = [
@@ -23,7 +24,13 @@ export const routes: Routes = [
   },
   { 
     path: 'create-ticket', 
+    
     component: TicketCreateComponent, // Reference the correct component name
+    canActivate: [AuthGuard]  // Protect if necessary
+  },
+  {
+    path: 'admin-dashboard', 
+    component: AdminDashboardComponent, // Reference the correct component name
     canActivate: [AuthGuard]  // Protect if necessary
   },
   { path: '**', redirectTo: '' }
