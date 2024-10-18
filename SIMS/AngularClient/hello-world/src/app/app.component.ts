@@ -27,7 +27,7 @@ export class AppComponent {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         const currentUrl = event.urlAfterRedirects;
-        this.showCreateTicketButton = currentUrl.includes('/dashboard') || currentUrl.includes('/tickets');
+        this.showCreateTicketButton = currentUrl.includes('/dashboard') || currentUrl.includes('/tickets') || currentUrl.includes('/assigned-tickets') || currentUrl.includes('/created-tickets');
         this.checkAuthentication();  // Check if the user is authenticated
       });
   }
@@ -36,6 +36,14 @@ export class AppComponent {
     // Check for the presence of an accessToken in cookies
     const token = this.cookieService.get('accessToken');
     this.isAuthenticated = !!token;  // Set isAuthenticated to true if token exists
+  }
+
+  logout() {
+    // Clear authentication cookies
+    this.cookieService.delete('accessToken', '/');
+    this.cookieService.delete('refreshToken', '/');
+    this.isAuthenticated = false;  // Update authentication status
+    this.router.navigate(['/home']);  // Redirect to home after logout
   }
 
   openCreateTicketForm() {

@@ -44,10 +44,11 @@ export class AssignedTicketsComponent implements OnInit {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     });
-
+  
     this.http.get('https://localhost:7292/ticket/assigned', { headers }).subscribe({
       next: (response: any) => {
-        console.log('Assigned Tickets:', response); // Log the response to inspect it
+        // console.log('Assigned Tickets API Response:', response); // Log the response to inspect it
+        // alert('Assigned Tickets Fetched: ' + JSON.stringify(response)); // Show the fetched response in an alert
         this.assignedTicketsdata = response; // Assign the response to the correct property
         this.isLoading = false;
       },
@@ -59,6 +60,7 @@ export class AssignedTicketsComponent implements OnInit {
       },
     });
   }
+  
 
   // Get the string representation of the state based on the enum
   getStateString(state: number): string {

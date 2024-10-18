@@ -47,6 +47,6 @@ export class TicketComponent {
   }
 
   goToassignedTickets() {
-    this.router.navigate(['/created-tickets']);
+    this.router.navigate(['/assigned-tickets']);
   }
 }
