@@ -54,7 +54,7 @@ namespace WebAPI.AuthServices
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = false,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
             };
