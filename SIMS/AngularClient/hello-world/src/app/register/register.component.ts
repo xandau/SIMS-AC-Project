@@ -59,7 +59,10 @@ export class RegisterComponent {
         error: (err) => {
           console.error('Registration failed', err);
         }
-      });
+      })
+      // Redirect to home page after login
+      this.router.navigate(['/login']);
+      ;
     } else {
       console.error('Passwords do not match!');
     }
