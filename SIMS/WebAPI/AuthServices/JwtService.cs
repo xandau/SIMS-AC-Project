@@ -50,7 +50,7 @@ namespace WebAPI.AuthServices
             var jwtSettings = _configuration.GetSection("JWTSettings");
             var secretKey = jwtSettings["Secret"];
 
-            var tokenValidationParameters = new TokenValidationParameters
+            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
@@ -59,11 +59,11 @@ namespace WebAPI.AuthServices
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
             };
 
-            var handler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
             try
             {
-                var claimsPrincipal = handler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
+                ClaimsPrincipal claimsPrincipal = handler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
 
                 return Convert.ToInt64(claimsPrincipal.Claims.FirstOrDefault().Value);
             }

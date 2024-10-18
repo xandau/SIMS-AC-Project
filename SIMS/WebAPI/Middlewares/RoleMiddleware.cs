@@ -18,8 +18,6 @@ namespace WebAPI.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            Console.WriteLine(context.Request.Path);
-
             if (context.Request.Path.ToString().StartsWith("/user"))
             {
                 IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();

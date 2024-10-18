@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPITests", "WebAPITests\WebAPITests.csproj", "{ACDA3529-532C-4295-9821-F159FE01CA1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
