@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { MatTableModule } from '@angular/material/table';
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-assigned-tickets',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, HttpClientModule],
   templateUrl: './assigned-tickets.component.html',
   styleUrls: ['./assigned-tickets.component.css'],
 })
@@ -44,11 +44,9 @@ export class AssignedTicketsComponent implements OnInit {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     });
-  
+
     this.http.get('https://localhost:7292/ticket/assigned', { headers }).subscribe({
       next: (response: any) => {
-        // console.log('Assigned Tickets API Response:', response); // Log the response to inspect it
-        // alert('Assigned Tickets Fetched: ' + JSON.stringify(response)); // Show the fetched response in an alert
         this.assignedTicketsdata = response; // Assign the response to the correct property
         this.isLoading = false;
       },
@@ -60,7 +58,6 @@ export class AssignedTicketsComponent implements OnInit {
       },
     });
   }
-  
 
   // Get the string representation of the state based on the enum
   getStateString(state: number): string {

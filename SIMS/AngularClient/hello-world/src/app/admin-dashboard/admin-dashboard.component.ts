@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // Import HttpClient and HttpHeaders correctly
 import { Router } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
+import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule for the HTTP client functionality
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,6 +15,7 @@ import { CookieService } from 'ngx-cookie-service';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
+    HttpClientModule, // Correctly use HttpClientModule here
     CommonModule
   ],
   templateUrl: './admin-dashboard.component.html',

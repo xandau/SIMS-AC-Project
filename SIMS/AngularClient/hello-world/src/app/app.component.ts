@@ -52,7 +52,6 @@ export class AppComponent {
     this.router.navigate(['/create-ticket']);  // Navigate to the create ticket page
   }
 
-
   refreshToken() {
     const refreshToken = this.cookieService.get('refreshToken');
     
