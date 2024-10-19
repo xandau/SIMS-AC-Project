@@ -13,7 +13,5 @@ namespace WebAPI.Controllers
         {
 
         }
-
-        // TODO: Absichern: dass nur Admin diesen verwenden kann
     }
 }

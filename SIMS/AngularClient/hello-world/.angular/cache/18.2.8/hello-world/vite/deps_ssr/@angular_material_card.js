@@ -1,10 +1,10 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
   MatCommonModule
-} from "./chunk-VUUXEDR6.js";
+} from "./chunk-HGFNQ3VA.js";
 import {
   CommonModule
-} from "./chunk-KKRJ4LPL.js";
+} from "./chunk-6K3IK2DV.js";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,10 +27,7 @@ import {
   ɵɵelementStart,
   ɵɵprojection,
   ɵɵprojectionDef
-} from "./chunk-6ZFWCITV.js";
-import "./chunk-5IW5ZEPE.js";
-import "./chunk-UOPINYA3.js";
-import "./chunk-RPWZ4CMX.js";
+} from "./chunk-TW4XVQZD.js";
 import "./chunk-NQ4HTGF6.js";
 
 // node_modules/@angular/material/fesm2022/card.mjs

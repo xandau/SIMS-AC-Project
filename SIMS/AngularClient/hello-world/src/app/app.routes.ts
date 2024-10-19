@@ -4,59 +4,21 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TicketComponent } from './ticket/ticket.component';
-import { TicketCreateComponent } from './ticket-create/ticket-create.component'; 
-import { CreatedTicketsComponent } from './created-tickets/created-tickets.component'; 
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { EditUserComponent } from './edit-user/edit-user.component';
-import { EditTicketComponent } from './edit-ticket/edit-ticket.component';
-import { AssignedTicketsComponent } from './assigned-tickets/assigned-tickets.component';
-import { UserGuard } from './user.guard'; 
-import { AdminGuard } from './admin.guard'; 
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent },  // Make Home route accessible to everyone
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
-    canActivate: [UserGuard] 
+    canActivate: [AuthGuard]  // Protected route
   },
   { 
     path: 'tickets', 
     component: TicketComponent, 
-    canActivate: [UserGuard] 
+    canActivate: [AuthGuard]  // Protect tickets with AuthGuard
   },
-  { 
-    path: 'create-ticket', 
-    
-    component: TicketCreateComponent, 
-    canActivate: [UserGuard]  
-  },
-  {
-    path: 'admin-dashboard', 
-    component: AdminDashboardComponent, 
-    canActivate: [AdminGuard]  
-  },
-  {
-    path: 'user/edit/:userId', 
-    component: EditUserComponent, 
-    canActivate: [AdminGuard]  
-  },
-  {
-    path: 'created-tickets',  
-    component: CreatedTicketsComponent,
-    canActivate: [UserGuard],
-  },
-  {
-    path: 'ticket/edit/:ticketId',  
-    component: EditTicketComponent,
-    canActivate: [UserGuard],
-  },
-  {
-    path: 'assigned-tickets',  
-    component: AssignedTicketsComponent,
-    canActivate: [UserGuard],
-  },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' }  // Redirect any unknown routes to the home page
 ];
