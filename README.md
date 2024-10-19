@@ -10,8 +10,9 @@ This project is include a Frontend created with Angular and a Backend created wi
 ![Redis](https://img.shields.io/badge/Redis-v7.0-red)
 ![MSSQL](https://img.shields.io/badge/MSSQL-database-blue)
 ![Semgrep Test](https://img.shields.io/badge/Security-Semgrep-green)
-
-![Coverage](https://img.shields.io/codecov/c/github/DEIN_USERNAME/DEIN_REPOSITORY)
+![Platform](https://img.shields.io/badge/platform-Windows-blue)
+![GitHub contributors](https://img.shields.io/github/contributors/xandau/SIMS-AC-Project)
+![Repo-Size](https://img.shields.io/github/repo-size/xandau/SIMS-AC-Project)
 
 ## Version
 
@@ -81,7 +82,6 @@ The .env-file is used in the dockercompose.yml and locates where the database fi
 
 ## UML-Diagram
 
-![Alt text](https://github.com/xandau/SIMS-AC-Project/blob/main/doku/UML-C%23.svg)
 <img src="https://github.com/xandau/SIMS-AC-Project/blob/main/doku/UML-C%23.svg">
 
 ### Explaination
@@ -98,7 +98,6 @@ In Program.cs everything is put together and registered to be used. An important
 
 ## ER-Diagram
 
-![Alt text](https://github.com/xandau/SIMS-AC-Project/blob/main/doku/UML-SQL.svg)
 <img src="https://github.com/xandau/SIMS-AC-Project/blob/main/doku/UML-SQL.svg">
 
 ### Explaination
