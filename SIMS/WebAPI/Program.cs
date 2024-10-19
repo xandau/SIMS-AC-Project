@@ -85,7 +85,7 @@ namespace WebAPI
             var app = builder.Build();
 
             // Middleware - differ between ADMIN and USER in /user
-            app.UseMiddleware<RoleMiddleware>();
+            app.UseMiddleware<Middleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
