@@ -1,5 +1,5 @@
 # SIMS-AC-Project
-This project is include a Frontend created with Angular and a Backend created with ASP.Net and Entity Framework. With the Frontend the user can use the features to create and lookup assigned security tickets.
+This project includes a frontend created with Angular and a backend created with ASP.Net and Entity Framework. With the frontend the user can use the features to create and lookup assigned security tickets.
 
 ## Badges
 ![Version](https://img.shields.io/badge/version-v1.0-blue)
