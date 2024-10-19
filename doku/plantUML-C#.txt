@@ -56,10 +56,10 @@ enum ETicketState {
     CLOSED = 4
 }
 
-class RoleMiddleware {
+class Middleware {
     - RequestDelegate _requestDelegate
     - JwtService _jwtService
-    + RoleMiddleware(RequestDelegate requestDelegate)
+    + Middleware(RequestDelegate requestDelegate)
     + Task InvokeAsync(HttpContext context)
 }
 
@@ -219,7 +219,7 @@ TicketsController --* TicketRepository
 UserController --* UserRepository
 
 Program *-- SIMSContext
-Program *-- RoleMiddleware
+Program *-- Middleware
 Program *-- AuthController
 Program *-- UserController
 Program *-- TicketsController

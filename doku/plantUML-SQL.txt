@@ -25,7 +25,6 @@ entity TICKETS {
   CREATION_TIME: datetime2
   Severity: tinyint
   CVE: nvarchar(max)
-  TIMESTAMP: datetime2
   --
   CREATOR_ID: bigint
   ASSIGNEDPERSON_ID: bigint
