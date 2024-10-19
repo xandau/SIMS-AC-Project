@@ -1,0 +1,38 @@
+<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+  <mat-card>
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="TITLE" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="DESCRIPTION" required></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Severity</mat-label>
+      <input matInput type="number" formControlName="Severity" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>CVE</mat-label>
+      <input matInput formControlName="CVE" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Assigned Person ID</mat-label>
+      <input matInput formControlName="assignedPersonID" required />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="ticketForm.invalid">Create Ticket</button>
+
+    <div *ngIf="isSuccess" class="success-message">
+      Ticket created successfully! Redirecting to the dashboard in {{ countdown }} seconds.
+    </div>
+    
+    <div *ngIf="isError">
+      {{ errorMessage }}
+    </div>
+  </mat-card>
+</form>

@@ -1,13 +1,31 @@
+/* Space between the links and buttons */
 .spacer {
-    flex: 1 1 auto;
-  }
-  
-  mat-toolbar {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  a {
-    margin-right: 16px; /* Adds spacing between links */
-  }
-  
+  flex-grow: 1;
+}
+
+/* Button container with proper spacing */
+.button-container {
+  display: flex;
+  gap: 10px; /* Increase spacing between the buttons */
+}
+
+/* Style the individual buttons */
+button {
+  margin-left: 15px; /* Add space to the left of the button */
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3700b3;
+}
+
+button:active {
+  background-color: #03dac5;
+}
