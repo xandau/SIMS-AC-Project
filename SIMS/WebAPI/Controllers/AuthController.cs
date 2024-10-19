@@ -13,11 +13,17 @@ namespace WebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthRepository _authRepository;
+
+        private readonly JwtService _jwtService;
+        private readonly RedisTokenStore _redisTokenStore;
         private readonly UserRepository _userRepository;
 
         public AuthController(JwtService jwtservice, RedisTokenStore redisTokenStore, UserRepository userRepository, AuthRepository authRepository)
         {
+            _jwtService = jwtservice;
+            _redisTokenStore = redisTokenStore;
             _userRepository = userRepository;
+
             _authRepository = authRepository;
         }
 

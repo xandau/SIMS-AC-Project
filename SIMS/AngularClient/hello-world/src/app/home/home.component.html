@@ -1,1 +1,28 @@
-<h1>Welcome to the Home Page!</h1>
+<div class="homepage-container">
+    <h1>Welcome to the Home Page</h1>
+  
+    <div class="meme-container">
+      <img src="assets/microservicehell-v0-3egcoxweiivd1.webp" alt="Microservice Meme" class="meme-image" (click)="openImage('assets/microservicehell-v0-3egcoxweiivd1.webp')"/>
+      <img src="assets/justgoogleeverything-v0-u1pln0elihvd1.webp" alt="Programmer Meme" class="meme-image" (click)="openImage('assets/justgoogleeverything-v0-u1pln0elihvd1.webp')"/>
+      <img src="assets/myprojectmanagerhasachievedtimetravel-v0-swgv8wignivd1.webp" alt="Dev Deadline Meme" class="meme-image" (click)="openImage('assets/myprojectmanagerhasachievedtimetravel-v0-swgv8wignivd1.webp')"/>
+    </div>
+  
+    <h2>Project By</h2>
+    <h3>Fabian Treber, is231007</h3>
+    <h3>Benjamin Borenich, is231024</h3>
+    <!-- Lightbox Modal -->
+    <div class="lightbox" *ngIf="lightboxOpen" (click)="closeImage()">
+      <img [src]="selectedImage" alt="Full-size image" class="lightbox-image"/>
+    </div>
+
+  <!-- GitHub Link with Logo -->
+  <footer class="footer">
+    <p>Check out the project on 
+      <a href="https://github.com/xandau/SIMS-AC-Project" target="_blank">
+        <img src="assets/github-mark.png" alt="GitHub Logo" class="github-logo"/>
+        GitHub
+      </a>
+    </p>
+  </footer>
+  </div>
+  
