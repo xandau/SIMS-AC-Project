@@ -1,6 +1,6 @@
 <div class="register-page">
   <mat-card class="register-card">
-    <h2>Create an Account</h2>
+    <h2>Register</h2>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       
       <!-- User Name Field -->
@@ -57,11 +57,14 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Register Button -->
       <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">
         Register
       </button>
-
     </form>
+    
+    <!-- Error Message Display -->
+    <div *ngIf="isError" class="error-message">
+      {{ errorMessage }}
+    </div>
   </mat-card>
 </div>
