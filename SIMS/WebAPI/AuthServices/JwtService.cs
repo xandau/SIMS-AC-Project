@@ -11,21 +11,25 @@ namespace WebAPI.AuthServices
 {
     public class JwtService
     {
-        private readonly IConfiguration _configuration;
+        private readonly string? secretKey;
+        private readonly SymmetricSecurityKey key;
+        private readonly SigningCredentials credentials;
 
         public JwtService()
         {
+#if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            _configuration = config;
+            secretKey = config["JWTSettings-Secret"];
+#else
+            IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            secretKey = config["JWTSettings-Secret"];
+#endif
+            key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         }
 
         public string GenerateAccessToken(User user)
         {
-            var jwtSettings = _configuration.GetSection("JWTSettings");
-            var secretKey = jwtSettings["Secret"];
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.ID.ToString()),
@@ -47,9 +51,6 @@ namespace WebAPI.AuthServices
 
         public long GetClaimsFromToken(string token)
         {
-            var jwtSettings = _configuration.GetSection("JWTSettings");
-            var secretKey = jwtSettings["Secret"];
-
             TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = false,

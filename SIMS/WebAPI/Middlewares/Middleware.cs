@@ -20,10 +20,15 @@ namespace WebAPI.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+#if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            IConfigurationProvider secretProvider = config.Providers.First();
-            secretProvider.TryGet("ConnectionStrings:SQL", out var secretData);
-            secretProvider.TryGet("ConnectionStrings:REDIS", out var secretDataRedis);
+            string? secretData = config["ConnectionString-SQL"];
+            string? secretDataRedis = config["ConnectionStrings-REDIS"];
+#else
+            IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            string? secretData = config["ConnectionString-SQL"];
+            string? secretDataRedis = config["ConnectionStrings-REDIS"];
+#endif
 
             var redisOptions = ConfigurationOptions.Parse(secretDataRedis);
             redisOptions.ConnectTimeout = 5000;

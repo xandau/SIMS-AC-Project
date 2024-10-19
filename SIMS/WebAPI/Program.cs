@@ -32,23 +32,21 @@ namespace WebAPI
             builder.Services.AddSwaggerGen();
 
             // Load secrets for database connection
+#if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            IConfigurationProvider secretProvider = config.Providers.First();
-            secretProvider.TryGet("ConnectionStrings:SQL", out var secretData);
+            string? secretData = config["ConnectionStrings-SQL"];
+            string? secretKey = config["JWTSettings-Secret"];
 
+
+#else
+            IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            string? secretData = config["ConnectionStrings-SQL"];
+            string? secretKey = config["JWTSettings-Secret"];
+#endif
             // Register DbContext
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
 
-            // Register repositories
-            builder.Services.AddScoped<IRepository<User>, UserRepository>();
-            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-            builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
-            builder.Services.AddScoped<UserRepository>();
-            builder.Services.AddScoped<AuthRepository>();
-
             // JWT and Authentication setup
-            var jwtSettings = config.GetSection("JWTSettings");
-            var secretKey = jwtSettings["Secret"];
 
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<RedisTokenStore>();
@@ -73,6 +71,15 @@ namespace WebAPI
                 };
             });
 
+
+
+            // Register repositories
+            builder.Services.AddScoped<IRepository<User>, UserRepository>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
+            builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<AuthRepository>();
+
             // Add and configure CORS policy
             builder.Services.AddCors(options =>
             {
@@ -84,12 +91,13 @@ namespace WebAPI
 
             var app = builder.Build();
 
-            // Middleware - differ between ADMIN and USER in /user
+            // Middleware
             app.UseMiddleware<Middleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                Console.WriteLine("SWAGGER START");
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

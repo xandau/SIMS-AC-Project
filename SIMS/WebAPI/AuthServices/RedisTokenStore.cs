@@ -9,9 +9,13 @@ namespace WebAPI.AuthServices
 
         public RedisTokenStore()
         {
+#if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            IConfigurationProvider secretProvider = config.Providers.First();
-            secretProvider.TryGet("ConnectionStrings:REDIS", out var secretData);
+            string? secretData = config["ConnectionStrings-REDIS"];
+#else
+            IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            string? secretData = config["ConnectionStrings-REDIS"];
+#endif
 
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(secretData);
             _storage = redis.GetDatabase();
