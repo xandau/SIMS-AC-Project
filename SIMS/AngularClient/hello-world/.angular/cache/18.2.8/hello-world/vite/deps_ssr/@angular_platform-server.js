@@ -1,5 +1,12 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
+  BrowserDomAdapter,
+  BrowserModule,
+  DomRendererFactory2,
+  EVENT_MANAGER_PLUGINS,
+  EventManagerPlugin
+} from "./chunk-UN5MP5CG.js";
+import {
   AnimationDriver,
   AnimationEngine,
   AnimationRendererFactory,
@@ -8,13 +15,6 @@ import {
   WebAnimationsDriver,
   WebAnimationsStyleNormalizer
 } from "./chunk-4DYVBR7O.js";
-import {
-  BrowserDomAdapter,
-  BrowserModule,
-  DomRendererFactory2,
-  EVENT_MANAGER_PLUGINS,
-  EventManagerPlugin
-} from "./chunk-UN5MP5CG.js";
 import {
   HTTP_ROOT_INTERCEPTOR_FNS,
   HttpClientModule
