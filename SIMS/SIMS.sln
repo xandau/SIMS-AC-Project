@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{D614247C-C601-4BD5-9763-538A69BC5AA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPITests", "WebAPITests\WebAPITests.csproj", "{ACDA3529-532C-4295-9821-F159FE01CA1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{D614247C-C601-4BD5-9763-538A69BC5AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D614247C-C601-4BD5-9763-538A69BC5AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D614247C-C601-4BD5-9763-538A69BC5AA4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD90C28B-9283-47CA-8CB5-D6F09FE0EC57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACDA3529-532C-4295-9821-F159FE01CA1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

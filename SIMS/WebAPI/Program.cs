@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using WebAPI.AuthServices;
+using WebAPI.Enums;
+using WebAPI.Middlewares;
 using WebAPI.Models;
 using WebAPI.Repository;
 
@@ -19,7 +24,8 @@ namespace WebAPI
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                // Json-Error für Cycle-Object - so wird Fehler ignoriert
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -35,9 +41,10 @@ namespace WebAPI
 
             // Register repositories
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
-            builder.Services.AddScoped<IRepository<Ticket>, TicketRepository>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
             builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<AuthRepository>();
 
             // JWT and Authentication setup
             var jwtSettings = config.GetSection("JWTSettings");
@@ -61,6 +68,7 @@ namespace WebAPI
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                     ValidateIssuer = false,
                     ValidateAudience = false,
+                    ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
             });
@@ -75,6 +83,9 @@ namespace WebAPI
             });
 
             var app = builder.Build();
+
+            // Middleware - differ between ADMIN and USER in /user
+            app.UseMiddleware<Middleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -34,6 +34,9 @@ namespace WebAPI.Repository
 
         public async Task<List<Entity>> GetAllAsync()
         {
+            if (_entities.Count() == 0)
+                return null;
+
             List<Entity> entities = await _entities.ToListAsync();
 
             _logEntry.Add(new LogEntry()

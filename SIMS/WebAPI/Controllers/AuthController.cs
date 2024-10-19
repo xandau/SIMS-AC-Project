@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using WebAPI.AuthServices;
@@ -11,49 +12,46 @@ namespace WebAPI.Controllers
     [Route("auth")]
     public class AuthController : ControllerBase
     {
-        private readonly JwtService _jwtService;
-        private readonly RedisTokenStore _redisTokenStore;
+        private readonly AuthRepository _authRepository;
         private readonly UserRepository _userRepository;
 
-        public AuthController(JwtService jwtservice, RedisTokenStore redisTokenStore, UserRepository userRepository)
+        public AuthController(JwtService jwtservice, RedisTokenStore redisTokenStore, UserRepository userRepository, AuthRepository authRepository)
         {
-            _jwtService = jwtservice;
-            _redisTokenStore = redisTokenStore;
             _userRepository = userRepository;
+            _authRepository = authRepository;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO login)
         {
-            Console.WriteLine(login.Email + " " + login.Password);
-            User user = await _userRepository.GetUserByMailAsync(login.Email, login.Password);
-            if (user == null)
-                return Unauthorized("Invalid Credentials");
-
-            var accessToken = _jwtService.GenerateAccessToken(user);
-            var refreshToken = _jwtService.GenerateRefreshToken();
-
-            await _redisTokenStore.StoreRefreshTokenAsync(user.ID, user.UserName, refreshToken);
-
-            return Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
+            try
+            {
+                object tokens = await _authRepository.Login(login.Email, login.Password);
+                return Ok(tokens);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(RefreshTokenDTO refresh_token)
         {
-            var entry = await _redisTokenStore.GetUserFromRefreshToken(refresh_token.Token);
-            if (entry.Length != 2)
-                return Unauthorized("Invalid refresh token");
-
-            User user = await _userRepository.GetUserByUsernameAsync(entry[1].Value.ToString());
-
-            var accessToken = _jwtService.GenerateAccessToken(user);
-            var newRefreshToken = _jwtService.GenerateRefreshToken();
-
-            if (_redisTokenStore.RemoveRefreshTokenAsync(refresh_token.Token).Result == true)
-                _redisTokenStore?.StoreRefreshTokenAsync(user.ID, user.UserName, newRefreshToken);
-            
-            return Ok(new { AccessToken = accessToken, RefreshToken = newRefreshToken });
+            try
+            {
+                if (refresh_token.Token != "")
+                {
+                    object tokens = await _authRepository.Refresh(refresh_token.Token);
+                    return Ok(tokens);
+                }
+                else
+                    return BadRequest("No Refresh Token provided");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("register")]

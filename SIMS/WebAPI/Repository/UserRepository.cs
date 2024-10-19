@@ -33,19 +33,6 @@ namespace WebAPI.Repository
         {
             User? entity = await _entities.Include(u => u.CreatedTickets).FirstAsync(u => u.ID == id);
 
-            if (entity != null)
-            {
-                Console.WriteLine($"User: {entity.UserName}");
-                foreach (Ticket ticket in entity.CreatedTickets)
-                {
-                    Console.WriteLine($"  Ticket: {ticket.Title}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("User not found.");
-            }
-
             if (entity is not null)
             {
                 _logEntry.Add(new LogEntry()
@@ -81,6 +68,15 @@ namespace WebAPI.Repository
 
                 _entities.Add(user);
                 await _context.SaveChangesAsync();
+
+                _logEntry.Add(new LogEntry()
+                {
+                    Level = LogLevel.Information,
+                    Timestamp = DateTime.Now,
+                    Message = $"{entity.GetType().Name} with ID \"{entity.ID}\" created"
+                });
+                await _context.SaveChangesAsync();
+
                 return user;
             }
             catch (DbUpdateException ex) when (ex.InnerException is Microsoft.Data.SqlClient.SqlException sqlEx)
@@ -100,6 +96,7 @@ namespace WebAPI.Repository
             }
         }
 
+        // private Methods
         private void ValidateUser(User user)
         {
             var validationContext = new ValidationContext(user);
