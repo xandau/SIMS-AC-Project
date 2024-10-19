@@ -103,3 +103,15 @@ In Program.cs everything is put together and registered to be used. An important
 ### Explaination
 
 In this diagram the three items are shown which are created by the Entity Framework. A user can create multiple tickets and can have more than one assigned - in the tickets the creator must be stored and a assigned person can be stored. LogEntry do not have any relations. In this table are log stored regarding CRUD operations in the other two table. Not shown in the diagram is the migrations table created by entity framework because it is not necessary for the system. 
+
+## Static Security Application Tests
+
+The frontend and backend have been checked using [Semgrep](https://semgrep.dev/) in order to automatically test for security weaknesses. The results are displayed below. 
+
+### Frontend
+
+<img src="https://github.com/xandau/SIMS-AC-Project/blob/main/doku/Semgrep_frontend.png" alt="coming soon">
+
+### Backend
+
+<img src="https://github.com/xandau/SIMS-AC-Project/blob/main/doku/Semgrep_backend.png">
