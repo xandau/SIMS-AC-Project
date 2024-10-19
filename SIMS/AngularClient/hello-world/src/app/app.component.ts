@@ -4,6 +4,7 @@ import { RouterModule, Router, ActivatedRoute, NavigationEnd } from '@angular/ro
 import { CommonModule } from '@angular/common'; // Import CommonModule for *ngIf
 import { filter } from 'rxjs/operators'; // Import filter
 import { CookieService } from 'ngx-cookie-service'; // Import CookieService for token management
+import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http'; // Import HttpClient and HttpClientModule for HTTP requests
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ import { CookieService } from 'ngx-cookie-service'; // Import CookieService for 
   imports: [
     MatToolbarModule,  // Add MatToolbarModule
     RouterModule,      // Add RouterModule to support routing
-    CommonModule       // Add CommonModule for *ngIf directive
+    CommonModule,      // Add CommonModule for *ngIf directive
+    HttpClientModule   // Add HttpClientModule to support HTTP requests
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
@@ -21,7 +23,7 @@ export class AppComponent {
   showCreateTicketButton = false;  // Variable to control the visibility of the Create Ticket button
   isAuthenticated = false;  // Declare and initialize isAuthenticated
 
-  constructor(private router: Router, private route: ActivatedRoute, private cookieService: CookieService) {
+  constructor(private router: Router, private route: ActivatedRoute, private cookieService: CookieService, private http: HttpClient) {
     // Listen for route changes and check if the current route is dashboard or tickets
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -49,4 +51,37 @@ export class AppComponent {
   openCreateTicketForm() {
     this.router.navigate(['/create-ticket']);  // Navigate to the create ticket page
   }
+
+
+  refreshToken() {
+    const refreshToken = this.cookieService.get('refreshToken');
+    
+    if (refreshToken) {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+  
+      // Make the request to refresh the token, sending the token field as "token"
+      this.http.post('https://localhost:7292/auth/refresh', { token: refreshToken }, { headers })
+        .subscribe({
+          next: (response: any) => {
+            // Assuming response contains the new tokens
+            this.cookieService.set('accessToken', response.accessToken, 1, '/', 'localhost', false, 'Lax');
+            this.cookieService.set('refreshToken', response.refreshToken, 30, '/', 'localhost', false, 'Lax');
+            console.log('Token refreshed successfully');
+  
+            // Show alert for success
+            alert('Token refreshed successfully');
+          },
+          error: (err) => {
+            console.error('Error refreshing token', err);
+            // Optionally redirect to login page if the refresh fails
+            this.router.navigate(['/login']);
+          }
+        });
+    } else {
+      console.error('No refresh token found');
+      this.router.navigate(['/login']); // Redirect to login if no refresh token
+    }
+  }  
 }

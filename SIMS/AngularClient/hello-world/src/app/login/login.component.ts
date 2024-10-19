@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';  // Ensure HttpClientModule is imported
+import { HttpClient, HttpClientModule } from '@angular/common/http';  
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { CookieService } from 'ngx-cookie-service'; // Import CookieService
+import { CookieService } from 'ngx-cookie-service'; 
 
 @Component({
   selector: 'app-login',
@@ -20,21 +20,21 @@ import { CookieService } from 'ngx-cookie-service'; // Import CookieService
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    HttpClientModule,  // Add HttpClientModule here
+    HttpClientModule,  
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  isError: boolean = false;  // To track if there's an error
-  errorMessage: string = ''; // To store error message
+  isError: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,    // Ensure HttpClient is injected
+    private http: HttpClient,    
     private router: Router,
-    private cookieService: CookieService  // Inject CookieService
+    private cookieService: CookieService  
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -51,50 +51,18 @@ export class LoginComponent {
           console.log('Login successful!', response);
 
           // Store tokens in cookies
-          this.setCookies(response.accessToken, response.refreshToken);
-
-          // Read and log the stored cookies
-          this.logCurrentCookies();
+          this.cookieService.set('accessToken', response.accessToken, 1, '/', 'localhost', false, 'Lax');
+          this.cookieService.set('refreshToken', response.refreshToken, 30, '/', 'localhost', false, 'Lax');
 
           // Redirect to home page after login
           this.router.navigate(['/dashboard']);
         },
-        error: (err: HttpErrorResponse) => {
+        error: (err) => {
           console.error('Login failed', err);
           this.isError = true;
-          if (err.status === 0) {
-            // Network error (e.g., backend server is down)
-            this.errorMessage = 'Network error: Unable to connect to the server.';
-          } else if (err.status === 401) {
-            // Unauthorized error (incorrect credentials)
-            this.errorMessage = 'Invalid email or password. Please try again.';
-          } else {
-            // Other errors
-            this.errorMessage = 'An unexpected error occurred. Please try again later.';
-          }
+          this.errorMessage = 'Login failed. Please check your credentials.';
         }
       });
     }
-  }
-
-  // Set the access and refresh tokens in cookies
-  setCookies(accessToken: string, refreshToken: string) {
-    try {
-      // Store access token (1 day expiry)
-      this.cookieService.set('accessToken', accessToken, 1, '/', 'localhost', false, 'Lax');
-      // Store refresh token (30 days expiry)
-      this.cookieService.set('refreshToken', refreshToken, 30, '/', 'localhost', false, 'Lax');
-    } catch (error) {
-      console.error('Error setting cookies:', error);
-    }
-  }
-
-  // Function to log current cookies
-  logCurrentCookies() {
-    const accessToken = this.cookieService.get('accessToken');
-    const refreshToken = this.cookieService.get('refreshToken');
-    
-    console.log('Access Token:', accessToken);
-    console.log('Refresh Token:', refreshToken);
   }
 }

@@ -8,14 +8,12 @@
   <!-- Conditionally show Dashboard and Tickets links based on authentication -->
   <a *ngIf="isAuthenticated" mat-button routerLink="/dashboard">Dashboard</a>
   <a *ngIf="isAuthenticated" mat-button routerLink="/tickets">Tickets</a>
+  
 
   <!-- Conditionally display the "Create Ticket" button -->
-  <button *ngIf="isAuthenticated && showCreateTicketButton" mat-raised-button color="accent" (click)="openCreateTicketForm()">
-    Create Ticket
-  </button>
-
+  <button *ngIf="isAuthenticated && showCreateTicketButton" mat-raised-button color="accent" (click)="openCreateTicketForm()">Create Ticket</button>
   <button mat-button *ngIf="isAuthenticated" (click)="logout()">Logout</button>
-
+  <button *ngIf="isAuthenticated" mat-button (click)="refreshToken()">Refresh Token</button>
 
 </mat-toolbar>
 
