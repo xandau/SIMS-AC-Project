@@ -1,0 +1,68 @@
+/* Global styles */
+body {
+  font-family: 'Roboto', sans-serif; /* Use a clean modern font */
+  background-color: #f4f4f9; /* Light background color for the page */
+  color: #333; /* Dark text color for readability */
+}
+
+mat-toolbar {
+  background-color: #3f51b5; /* Primary toolbar color */
+  color: #fff; /* White text for contrast */
+}
+
+/* Navbar link styles */
+mat-toolbar a {
+  color: #e0e0e0; /* Light gray links */
+  text-decoration: none;
+  font-weight: 500;
+  margin-right: 15px;
+}
+
+mat-toolbar a:hover {
+  color: #fff; /* White links on hover */
+}
+
+/* Button styles */
+button {
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  /* border-radius: 4px; */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+button[disabled] {
+  background-color: #cccccc; /* Disabled button color */
+  cursor: not-allowed;
+}
+
+/* Page header styles */
+h2 {
+  color: #3f51b5; /* Primary color for headings */
+  font-size: 2rem;
+}
+
+/* Card styles */
+mat-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 20px;
+  margin: 20px;
+  max-width: 600px;
+  margin: 40px auto; /* Center the card */
+}
+
+/* Center the form */
+.modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px); /* Full viewport height minus the navbar */
+}

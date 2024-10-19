@@ -12,8 +12,8 @@ using WebAPI;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(SIMSContext))]
-    [Migration("20241017133922_finInit")]
-    partial class finInit
+    [Migration("20241017173416_simsv")]
+    partial class simsv
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
