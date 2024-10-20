@@ -1,0 +1,55 @@
+<div class="logs-container">
+    <h1>Log Entries</h1>
+  
+    <div *ngIf="isLoading" class="loading-indicator">
+      Loading logs...
+    </div>
+  
+    <div *ngIf="!isLoading && logs.length > 0">
+      <table mat-table [dataSource]="pagedLogs" class="mat-elevation-z8">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let log"> {{log.id}} </td>
+        </ng-container>
+  
+        <!-- Timestamp Column -->
+        <ng-container matColumnDef="timestamp">
+          <th mat-header-cell *matHeaderCellDef> Timestamp </th>
+          <td mat-cell *matCellDef="let log"> {{log.timestamp}} </td>
+        </ng-container>
+  
+        <!-- Level Column -->
+        <ng-container matColumnDef="level">
+          <th mat-header-cell *matHeaderCellDef> Level </th>
+          <td mat-cell *matCellDef="let log"> {{log.level}} </td>
+        </ng-container>
+  
+        <!-- Message Column -->
+        <ng-container matColumnDef="message">
+          <th mat-header-cell *matHeaderCellDef> Message </th>
+          <td mat-cell *matCellDef="let log"> {{log.message}} </td>
+        </ng-container>
+  
+        <!-- Table Header and Rows -->
+        <tr mat-header-row *matHeaderRowDef="['id', 'timestamp', 'level', 'message']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['id', 'timestamp', 'level', 'message'];"></tr>
+      </table>
+  
+      <!-- Paginator -->
+      <mat-paginator
+        [length]="totalLogs"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="onPageChange($event)"
+        aria-label="Log Paginator">
+      </mat-paginator>
+    </div>
+  
+    <!-- Show error if any -->
+    <div *ngIf="isError" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+  

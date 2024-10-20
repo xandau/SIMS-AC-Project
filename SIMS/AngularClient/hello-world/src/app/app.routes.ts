@@ -10,6 +10,7 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { EditTicketComponent } from './edit-ticket/edit-ticket.component';
 import { AssignedTicketsComponent } from './assigned-tickets/assigned-tickets.component';
+import { LogsComponent } from './logs/logs.component';
 import { UserGuard } from './user.guard'; 
 import { AdminGuard } from './admin.guard'; 
 
@@ -56,6 +57,11 @@ export const routes: Routes = [
   {
     path: 'assigned-tickets',  
     component: AssignedTicketsComponent,
+    canActivate: [UserGuard],
+  },
+  {
+    path: 'logs',  
+    component: LogsComponent,
     canActivate: [UserGuard],
   },
   { path: '**', redirectTo: '' }

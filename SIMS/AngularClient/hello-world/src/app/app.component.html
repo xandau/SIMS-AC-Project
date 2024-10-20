@@ -8,8 +8,9 @@
   <!-- Conditionally show Dashboard and Tickets links based on authentication -->
   <a *ngIf="isAuthenticated" mat-button routerLink="/dashboard">Dashboard</a>
   <a *ngIf="isAuthenticated" mat-button routerLink="/tickets">Tickets</a>
+  <a *ngIf="isAuthenticated" mat-button routerLink="/logs">Logs</a>
 
-  <span class="spacer"></span> <!-- Adds space between the links and the buttons -->
+  <!-- <span class="spacer"></span> Adds space between the links and the buttons -->
 
   <!-- Button container with spaced buttons -->
   <div class="button-container">
