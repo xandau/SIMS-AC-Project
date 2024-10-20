@@ -19,6 +19,12 @@ import { jwtDecode } from 'jwt-decode';  // Correct import for jwtDecode
         <p>Click here to view your tickets.</p>
       </div>
 
+      <!-- Log Panel -->
+      <div class="panel" (click)="goToLogs()">
+        <h3>Logs</h3>
+        <p>Click here to view the Logs.</p>
+      </div>
+
       <!-- Admin Dashboard Panel (Visible only if the user is an admin) -->
       <div class="panel" *ngIf="isAdmin" (click)="goToAdminDashboard()">
         <h3>Admin Dashboard</h3>
@@ -91,5 +97,9 @@ export class DashboardComponent implements OnInit {
     if (this.isAdmin) {
       this.router.navigate(['/admin-dashboard']);
     }
+  }
+
+  goToLogs() {
+      this.router.navigate(['/logs']);
   }
 }
