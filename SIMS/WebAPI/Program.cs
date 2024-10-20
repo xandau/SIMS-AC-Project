@@ -43,6 +43,9 @@ namespace WebAPI
             string? secretData = config["ConnectionStrings-SQL"];
             string? secretKey = config["JWTSettings-Secret"];
 #endif
+            Console.WriteLine(secretData);
+            Console.WriteLine(secretKey);
+
             // Register DbContext
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
 
@@ -102,7 +105,7 @@ namespace WebAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             // Apply CORS policy
             app.UseCors("AllowSpecificOrigin");

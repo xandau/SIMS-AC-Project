@@ -82,14 +82,15 @@ The .env-file is used in the dockercompose.yml and locates where the database fi
 
 ### Add dockersettings.env
 
-In this file environment variable are stored for the C#-Application which are used in the build. Create this file in the same directory as the compose file.
+In the ``` dockersettings.env ``` environment variable are stored for the C#-Application which are used in the build. Create this file in the same directory as the compose file.
 Example:
 
+```
 ASPNETCORE_ENVIRONMENT=Production
 JWTSettings-Secret=yourSecretKey
-ConnectionString-SQL=Server=172.30.0.2,15000;Database=SIMS;User Id=sa; Password=Adm1234!;TrustServerCertificate=True
-ConnectionStrings-REDIS=172.30.0.3,6379
-
+ConnectionStrings-SQL=Server=172.30.0.2,1433;Database=SIMS;User Id=yourUsername; Password=yourSecurePassword;TrustServerCertificate=True
+ConnectionStrings-REDIS=172.30.0.3,6379 
+```
 ## UML-Diagram
 
 <img src="https://github.com/xandau/SIMS-AC-Project/blob/main/doku/UML-C%23.svg">

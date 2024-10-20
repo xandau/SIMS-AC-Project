@@ -22,11 +22,11 @@ namespace WebAPI.Middlewares
         {
 #if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            string? secretData = config["ConnectionString-SQL"];
+            string? secretData = config["ConnectionStrings-SQL"];
             string? secretDataRedis = config["ConnectionStrings-REDIS"];
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            string? secretData = config["ConnectionString-SQL"];
+            string? secretData = config["ConnectionStrings-SQL"];
             string? secretDataRedis = config["ConnectionStrings-REDIS"];
 #endif
 

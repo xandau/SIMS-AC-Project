@@ -13,16 +13,16 @@ namespace WebAPI.Repository.Tests
     [TestClass()]
     public class UserRepositoryTests
     {
-        // Checks if User can be created when E-Mail is already existing
+        // Checks if User can be created when E-Mail is already existing - Debug Mode must be used
         [TestMethod()]
         public async Task GetUserByUsernameAsyncTest()
         {
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            IConfigurationProvider secretProvider = config.Providers.First();
-            secretProvider.TryGet("ConnectionStrings:SQL", out var secretData);
+            string? secretData = config["ConnectionStrings-SQL"]; 
 
             DbContextOptions options = new DbContextOptionsBuilder<SIMSContext>()
-               .UseSqlServer(secretData).Options;
+               .UseSqlServer(secretData)
+               .Options;
 
             SIMSContext context = new SIMSContext(options);
             

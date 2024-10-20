@@ -12,6 +12,7 @@ using System.Security.Claims;
 
 namespace WebAPI.AuthServices.Tests
 {
+    // Debug Mode must be used
     [TestClass()]
     public class JwtServiceTests
     {
@@ -41,8 +42,7 @@ namespace WebAPI.AuthServices.Tests
             };
 
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            var jwtSettings = config.GetSection("JWTSettings");
-            var secretKey = jwtSettings["Secret"];
+            string? secretKey = config["JWTSettings-Secret"];
 
             JwtService jwtService = new JwtService();
 

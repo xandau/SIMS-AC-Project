@@ -20,7 +20,6 @@ namespace WebAPI.Repository
             User? user = await _userRepository.GetUserByMailAsync(email, password);
             if (user == null)
                 throw new Exception("Invalid Credentials");
-                //return Unauthorized("Invalid Credentials");
 
             var accessToken = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();

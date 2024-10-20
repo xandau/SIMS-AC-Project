@@ -14,7 +14,7 @@ namespace WebAPI.Repository
 
         public async Task<User?> GetUserByMailAsync(string mail, string password)
         {
-            User user = await _entities.Where(u => u.Email == mail).FirstAsync();
+            User? user = await _entities.Where(u => u.Email == mail).FirstOrDefaultAsync();
 
             if (user != null && user.VerifyPassword(password) == true)
             {
