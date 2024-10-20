@@ -78,7 +78,17 @@ The backend provides an API and the main logic of the system. It connects to the
 You can also use the docker compose provided in this repository and the dockerfiles for hsoting the frontend and backend.
 
 ### Create a .env File with the neccesarry path for the docker database containers
-The .env-file is used in the dockercompose.yml and locates where the database files are persistently stored: ``` .env  DB_DATA_PATH=c:\yourpath_here ```
+The .env-file is used in the dockercompose.yml and locates where the database files are persistently stored: ``` DB_DATA_PATH=c:\yourpath_here ```
+
+### Add dockersettings.env
+
+In this file environment variable are stored for the C#-Application which are used in the build. Create this file in the same directory as the compose file.
+Example:
+
+ASPNETCORE_ENVIRONMENT=Production
+JWTSettings-Secret=yourSecretKey
+ConnectionString-SQL=Server=172.30.0.2,15000;Database=SIMS;User Id=sa; Password=Adm1234!;TrustServerCertificate=True
+ConnectionStrings-REDIS=172.30.0.3,6379
 
 ## UML-Diagram
 
