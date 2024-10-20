@@ -38,6 +38,8 @@ services:
     networks:
       sims_network:
         ipv4_address: 172.30.0.4
+    environment:
+      - WEB_API_URL=https://172.30.0.5:8081  # Define the environment variable here
     restart: always
 
   webapi:

@@ -10,6 +10,9 @@ import { jwtDecode } from "jwt-decode";
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
+
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -33,7 +36,7 @@ export class AdminGuard implements CanActivate {
         'Content-Type': 'application/json',
       });
 
-      return this.http.get(`https://localhost:7292/user/${userId}`, { headers }).pipe(
+      return this.http.get(`${this.apiUrl}/user/${userId}`, { headers }).pipe(
         map((response: any) => {
           if (response && response.role === 2) {  // Admin role
             return true;

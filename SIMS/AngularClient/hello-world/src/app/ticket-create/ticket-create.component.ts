@@ -33,6 +33,8 @@ export class TicketCreateComponent {
   errorMessage: string = '';   // Store the error message to display
   countdown: number = 5;       // Countdown in seconds before redirecting to dashboard
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+  
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -76,7 +78,7 @@ export class TicketCreateComponent {
       });
 
       // Make the HTTP POST request with the Bearer token in the headers and JSON payload
-      this.http.post('https://localhost:7292/ticket', JSON.stringify(ticketData), { headers }).subscribe({
+      this.http.post(`${this.apiUrl}/ticket`, JSON.stringify(ticketData), { headers }).subscribe({
         next: (response: any) => {
           console.log('Ticket created successfully!', response);
           this.isSuccess = true;  // Mark as successful creation

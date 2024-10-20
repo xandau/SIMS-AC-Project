@@ -7,6 +7,8 @@
 .button-container {
   display: flex;
   gap: 10px; /* Increase spacing between the buttons */
+  margin: 0 auto; /* Center the button container according to the viewport */
+  align-items: center; /* Vertically align buttons */
 }
 
 /* Style the individual buttons */

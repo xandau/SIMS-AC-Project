@@ -27,6 +27,8 @@ export class AdminDashboardComponent implements OnInit {
   isError = false;    // Flag for handling errors
   errorMessage: string = '';
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -48,7 +50,7 @@ export class AdminDashboardComponent implements OnInit {
     });
 
     // Make the GET request to fetch users
-    this.http.get('https://localhost:7292/user', { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/user`, { headers }).subscribe({
       next: (response: any) => {
         this.users = response;  // Store the fetched users
         this.isLoading = false;  // Set loading to false
@@ -70,7 +72,7 @@ export class AdminDashboardComponent implements OnInit {
       'Content-Type': 'application/json'
     });
 
-    this.http.delete(`https://localhost:7292/user/${userId}`, { headers }).subscribe({
+    this.http.delete(`${this.apiUrl}/user/${userId}`, { headers }).subscribe({
       next: (response: any) => {
         console.log(`User with ID ${userId} deleted successfully.`);
         this.fetchUsers();  // Refresh the list after deletion

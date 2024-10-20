@@ -23,6 +23,8 @@ export class AppComponent {
   showCreateTicketButton = false;  // Variable to control the visibility of the Create Ticket button
   isAuthenticated = false;  // Declare and initialize isAuthenticated
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(private router: Router, private route: ActivatedRoute, private cookieService: CookieService, private http: HttpClient) {
     // Listen for route changes and check if the current route is dashboard or tickets
     this.router.events
@@ -61,7 +63,7 @@ export class AppComponent {
       });
   
       // Make the request to refresh the token, sending the token field as "token"
-      this.http.post('https://localhost:7292/auth/refresh', { token: refreshToken }, { headers })
+      this.http.post(`${this.apiUrl}/auth/refresh`, { token: refreshToken }, { headers })
         .subscribe({
           next: (response: any) => {
             // Assuming response contains the new tokens

@@ -27,6 +27,8 @@ export class CreatedTicketsComponent implements OnInit {
     4: 'CLOSED',
   };
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
@@ -45,7 +47,7 @@ export class CreatedTicketsComponent implements OnInit {
       'Content-Type': 'application/json',
     });
 
-    this.http.get('https://localhost:7292/ticket/created', { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/ticket/created`, { headers }).subscribe({
       next: (response: any) => {
         this.createdTickets = response; // Assuming response is an array of tickets
         this.isLoading = false;

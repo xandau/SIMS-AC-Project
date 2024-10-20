@@ -30,6 +30,8 @@ export class LoginComponent {
   isError: boolean = false;
   errorMessage: string = '';
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,    
@@ -46,7 +48,9 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
 
-      this.http.post('https://localhost:7292/auth/login', loginData).subscribe({
+      // console.log('API URL:', this.apiUrl); 
+
+      this.http.post(`${this.apiUrl}/auth/login`, loginData).subscribe({
         next: (response: any) => {
           console.log('Login successful!', response);
 

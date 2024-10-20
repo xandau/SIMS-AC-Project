@@ -38,6 +38,8 @@ export class EditUserComponent implements OnInit {
     { value: 2, label: 'ADMIN' }
   ];
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+  
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -69,7 +71,7 @@ export class EditUserComponent implements OnInit {
       'Content-Type': 'application/json'
     });
 
-    this.http.get(`https://localhost:7292/user/${this.userId}`, { headers }).subscribe({
+    this.http.get(`${this.apiUrl}:7292/user/${this.userId}`, { headers }).subscribe({
       next: (response: any) => {
         this.editUserForm.patchValue(response);
         this.isLoading = false;
@@ -98,7 +100,7 @@ export class EditUserComponent implements OnInit {
       };
 
       // Send the form data with the correct role value and userId
-      this.http.put(`https://localhost:7292/user/${this.userId}`, updatedUserData, { headers }).subscribe({
+      this.http.put(`${this.apiUrl}/user/${this.userId}`, updatedUserData, { headers }).subscribe({
         next: (response: any) => {
           console.log('User updated successfully!', response);
           this.router.navigate(['/admin-dashboard']);  // Navigate back to admin dashboard after successful update

@@ -27,6 +27,8 @@ export class RegisterComponent {
   isError = false; // Flag to track if there is an error
   errorMessage = ''; // Message to show specific error details
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -46,7 +48,7 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       const registerData = this.registerForm.value;
 
-      this.http.post('https://localhost:7292/api/register', registerData).subscribe({
+      this.http.post(`${this.apiUrl}/auth/register`, registerData).subscribe({
         next: (response: any) => {
           console.log('Registration successful!', response);
           this.router.navigate(['/login']); // Navigate to login after successful registration

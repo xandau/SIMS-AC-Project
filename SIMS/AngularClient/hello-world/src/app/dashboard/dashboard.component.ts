@@ -46,6 +46,8 @@ import { jwtDecode } from 'jwt-decode';  // Correct import for jwtDecode
 export class DashboardComponent implements OnInit {
   isAdmin: boolean = false;  // To check if the user is an admin
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(private router: Router, private cookieService: CookieService, private http: HttpClient) {}
 
   ngOnInit() {
@@ -67,7 +69,7 @@ export class DashboardComponent implements OnInit {
       });
 
       // Make an API call to /user/{userId} to get the user's details
-      this.http.get(`https://localhost:7292/user/${userId}`, { headers }).subscribe({
+      this.http.get(`${this.apiUrl}/user/${userId}`, { headers }).subscribe({
         next: (response: any) => {
           // Check if the user has the admin role (role === 2)
           this.isAdmin = response && response.role === 2;

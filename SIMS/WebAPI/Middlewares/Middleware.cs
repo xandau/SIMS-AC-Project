@@ -76,7 +76,9 @@ namespace WebAPI.Middlewares
                 }
             }
 
-            if (context.Request.Path.ToString().StartsWith("/user"))
+
+
+            if (context.Request.Path.ToString().StartsWith("/user") && !(context.Request.Method.ToUpper()=="GET" && context.Request.Path.ToString().StartsWith("/user/")))
             {
                 var authHeader = context.Request.Headers["Authorization"].ToString();
 

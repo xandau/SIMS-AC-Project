@@ -43,6 +43,8 @@ export class EditTicketComponent implements OnInit {
     { value: 4, label: 'CLOSED' }
   ];
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -79,7 +81,7 @@ export class EditTicketComponent implements OnInit {
       'Content-Type': 'application/json'
     });
 
-    this.http.get(`https://localhost:7292/ticket/${this.ticketId}`, { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/ticket/${this.ticketId}`, { headers }).subscribe({
       next: (response: any) => {
         // Check if the current user is the creator or assigned person
         if (response.creatorID === this.userId || response.assignedPersonID === this.userId) {
@@ -118,7 +120,7 @@ export class EditTicketComponent implements OnInit {
         creatorID: this.creatorID  // Include the original creatorID
       };
 
-      this.http.put(`https://localhost:7292/ticket/${this.ticketId}`, updatedTicketData, { headers }).subscribe({
+      this.http.put(`${this.apiUrl}/ticket/${this.ticketId}`, updatedTicketData, { headers }).subscribe({
         next: (response: any) => {
           console.log('Ticket updated successfully!', response);
           this.router.navigate(['/created-tickets']);  // Redirect back to created tickets page after update

@@ -27,6 +27,8 @@ export class AssignedTicketsComponent implements OnInit {
     4: 'CLOSED',
   };
 
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
@@ -45,7 +47,7 @@ export class AssignedTicketsComponent implements OnInit {
       'Content-Type': 'application/json',
     });
 
-    this.http.get('https://localhost:7292/ticket/assigned', { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/ticket/assigned`, { headers }).subscribe({
       next: (response: any) => {
         this.assignedTicketsdata = response; // Assign the response to the correct property
         this.isLoading = false;
