@@ -17,6 +17,7 @@ export class LogsComponent implements OnInit {
   pagedLogs: any[] = []; // To hold logs for the current page
   isLoading = true;  // For the loading indicator
   errorMessage: string = '';  // For any errors
+  isError = false;  // This flag is now added to track errors
 
   // Pagination properties
   pageSize = 10;  // Logs per page
@@ -34,6 +35,7 @@ export class LogsComponent implements OnInit {
   // Fetch logs from the API
   fetchLogs() {
     this.isLoading = true;
+    this.isError = false;  // Reset error state before fetching logs
 
     const accessToken = this.cookieService.get('accessToken'); // Get accessToken from cookie
 
@@ -51,6 +53,7 @@ export class LogsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching logs', err);
+        this.isError = true;  // Set error flag
         this.errorMessage = 'Error fetching logs. Please try again later.';
         this.isLoading = false;
       },
