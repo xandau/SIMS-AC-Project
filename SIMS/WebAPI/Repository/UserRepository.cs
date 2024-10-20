@@ -2,14 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using WebAPI.AuthServices;
+using Azure.Core;
 
 namespace WebAPI.Repository
 {
     public class UserRepository : ARepository<User>
     {
+        private JwtService jwtService;
+
         public UserRepository(SIMSContext context) : base(context)
         {
             _context = context;
+            jwtService = new JwtService();
         }
 
         public async Task<User?> GetUserByMailAsync(string mail, string password)
@@ -26,12 +31,15 @@ namespace WebAPI.Repository
 
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return await _entities.Where(u => u.UserName == username).FirstAsync();
+            return await _entities.Where(u => u.UserName == username).FirstOrDefaultAsync();
         }
 
-        public override async Task<User> GetAsync(long id)
+        public override async Task<User> GetAsync(long id, string access_token = "")
         {
-            User? entity = await _entities.Include(u => u.CreatedTickets).FirstAsync(u => u.ID == id);
+            if (id != jwtService.GetClaimsFromToken(access_token))
+                throw new Exception("Not allowed to view this resource");
+
+            User? entity = await _entities.Include(u => u.CreatedTickets).FirstOrDefaultAsync(u => u.ID == id);
 
             if (entity is not null)
             {

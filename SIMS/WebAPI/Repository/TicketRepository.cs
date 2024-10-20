@@ -16,7 +16,7 @@ namespace WebAPI.Repository
             jwtService = new JwtService();
         }
 
-        public override async Task<Ticket> GetAsync(long id)
+        public override async Task<Ticket> GetAsync(long id, string access_token = "")
         {
             Ticket? entity = null;
 

@@ -14,7 +14,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Entity>> ReadAsync([Required] int id)
+        public virtual async Task<ActionResult<Entity>> ReadAsync([Required] int id)
         {
             Entity? e = await _repository.GetAsync(id);
 

@@ -51,7 +51,7 @@ namespace WebAPI.Repository
             return entities; 
         }
 
-        public virtual async Task<Entity> GetAsync(long id)
+        public virtual async Task<Entity> GetAsync(long id, string access_token = "")
         {
             Entity? entity = await _entities.FindAsync(id);
 
