@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([Required] int id)
+        public virtual async Task<ActionResult> Delete([Required] int id)
         {
             var e = await _repository.GetAsync(id);
             if (e is null)

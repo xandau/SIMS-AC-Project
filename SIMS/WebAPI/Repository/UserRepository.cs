@@ -36,10 +36,7 @@ namespace WebAPI.Repository
 
         public override async Task<User> GetAsync(long id, string access_token = "")
         {
-            if (id != jwtService.GetClaimsFromToken(access_token))
-                throw new Exception("Not allowed to view this resource");
-
-            User? entity = await _entities.Include(u => u.CreatedTickets).FirstOrDefaultAsync(u => u.ID == id);
+           User? entity = await _entities.Include(u => u.CreatedTickets).FirstOrDefaultAsync(u => u.ID == id);
 
             if (entity is not null)
             {

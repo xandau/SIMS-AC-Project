@@ -59,7 +59,7 @@ namespace WebAPI.Migrations
                     CREATION_TIME = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SEVERITY = table.Column<byte>(type: "tinyint", nullable: false),
                     CVE = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CREATOR_ID = table.Column<long>(type: "bigint", nullable: false),
+                    CREATOR_ID = table.Column<long>(type: "bigint", nullable: true),
                     ASSIGNEDPERSON_ID = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -69,13 +69,14 @@ namespace WebAPI.Migrations
                         name: "FK_TICKETS_USERS_ASSIGNEDPERSON_ID",
                         column: x => x.ASSIGNEDPERSON_ID,
                         principalTable: "USERS",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_TICKETS_USERS_CREATOR_ID",
                         column: x => x.CREATOR_ID,
                         principalTable: "USERS",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(

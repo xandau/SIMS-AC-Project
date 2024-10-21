@@ -20,6 +20,8 @@ namespace WebAPI.Repository
             User? user = await _userRepository.GetUserByMailAsync(email, password);
             if (user == null)
                 throw new Exception("Invalid Credentials");
+            if (user.Blocked == true)
+                throw new Exception("Cannot login: Blocked");
 
             var accessToken = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
@@ -37,6 +39,9 @@ namespace WebAPI.Repository
                 throw new Exception("Invalid refresh token");
 
             User? user = await _userRepository.GetUserByUsernameAsync(entry[1].Value.ToString());
+
+            if (user.Blocked == true)
+                throw new Exception("Cannot login: Blocked");
 
             var accessToken = _jwtService.GenerateAccessToken(user);
             var newRefreshToken = _jwtService.GenerateRefreshToken();

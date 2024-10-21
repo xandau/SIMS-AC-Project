@@ -37,7 +37,7 @@ namespace WebAPI.Models
 
 
         [Column("CREATOR_ID")]
-        public long CreatorID { get; set; }
+        public long? CreatorID { get; set; }
 
         public virtual User? Creator { get; set; }
 

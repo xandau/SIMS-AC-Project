@@ -63,7 +63,7 @@ class Middleware {
     + Task InvokeAsync(HttpContext context)
 }
 
-class AItem {
+abstract class AItem {
     + long ID
 }
 
@@ -206,31 +206,31 @@ ARepository <|.. IRepository
 
 TicketRepository <|.. ITicketRepository 
 
-AuthController --* AuthRepository 
-AuthController --* LoginDTO
-AuthController --* RefreshTokenDTO
+AuthController -- AuthRepository 
+AuthController -- LoginDTO
+AuthController -- RefreshTokenDTO
 
-AuthRepository --* JwtService
-AuthRepository --* RedisTokenStore
+AuthRepository -- JwtService
+AuthRepository -- RedisTokenStore
 
 
-LogEntryController --* LogEntryRepository
-TicketsController --* TicketRepository
-UserController --* UserRepository
+LogEntryController -- LogEntryRepository
+TicketsController -- TicketRepository
+UserController -- UserRepository
 
-Program *-- SIMSContext
-Program *-- Middleware
-Program *-- AuthController
-Program *-- UserController
-Program *-- TicketsController
-Program *-- LogEntryController
+Program -- SIMSContext
+Program -- Middleware
+Program -- AuthController
+Program -- UserController
+Program -- TicketsController
+Program -- LogEntryController
 
-SIMSContext o-- User
-SIMSContext o-- LogEntry
-SIMSContext o-- Ticket
+SIMSContext -- User
+SIMSContext -- LogEntry
+SIMSContext -- Ticket
 
-SIMSContext --* UserRepository
-SIMSContext --* TicketRepository
-SIMSContext --* LogEntryRepository
+SIMSContext -- UserRepository
+SIMSContext -- TicketRepository
+SIMSContext -- LogEntryRepository
 
 @enduml
