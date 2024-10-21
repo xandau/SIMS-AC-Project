@@ -27,6 +27,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./edit-ticket.component.css']
 })
 export class EditTicketComponent implements OnInit {
+  apiUrl = (window as any).__env?.WEB_API_URL;
+
   ticketForm: FormGroup;
   ticketId: number;
   isLoading = true;
@@ -43,7 +45,8 @@ export class EditTicketComponent implements OnInit {
     { value: 4, label: 'CLOSED' }
   ];
 
-  apiUrl = (window as any).__env?.WEB_API_URL;
+
+  
 
   constructor(
     private fb: FormBuilder,
@@ -70,11 +73,13 @@ export class EditTicketComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('API URL:', this.apiUrl);
     this.fetchTicketDetails();
   }
 
   // Fetch ticket details for editing
   fetchTicketDetails() {
+
     const token = this.cookieService.get('accessToken');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,

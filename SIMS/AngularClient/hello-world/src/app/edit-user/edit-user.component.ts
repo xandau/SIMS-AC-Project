@@ -53,7 +53,6 @@ export class EditUserComponent implements OnInit {
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       role: ['', [Validators.required]],  // Role field uses the enum mapping
-      blocked: [false]
     });
 
     this.userId = Number(this.route.snapshot.paramMap.get('userId'));
