@@ -43,9 +43,6 @@ namespace WebAPI
             string? secretData = config["ConnectionStrings-SQL"];
             string? secretKey = config["JWTSettings-Secret"];
 #endif
-            Console.WriteLine(secretData);
-            Console.WriteLine(secretKey);
-
             // Register DbContext
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
 
@@ -116,7 +113,18 @@ namespace WebAPI
 
             app.MapControllers();
 
+            MigrateDatabase(app);
+
             app.Run();
+        }
+
+        private static void MigrateDatabase(WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<SIMSContext>().Database;
+                scope.ServiceProvider.GetRequiredService<SIMSContext>().Database.Migrate();
+            }
         }
     }
 }

@@ -173,13 +173,11 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("User", "AssignedPerson")
                         .WithMany("AssignedTickets")
-                        .HasForeignKey("AssignedPersonID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("AssignedPersonID");
 
                     b.HasOne("User", "Creator")
                         .WithMany("CreatedTickets")
-                        .HasForeignKey("CreatorID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CreatorID");
 
                     b.Navigation("AssignedPerson");
 

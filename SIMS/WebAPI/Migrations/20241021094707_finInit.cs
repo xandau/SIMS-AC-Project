@@ -69,14 +69,12 @@ namespace WebAPI.Migrations
                         name: "FK_TICKETS_USERS_ASSIGNEDPERSON_ID",
                         column: x => x.ASSIGNEDPERSON_ID,
                         principalTable: "USERS",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_TICKETS_USERS_CREATOR_ID",
                         column: x => x.CREATOR_ID,
                         principalTable: "USERS",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateIndex(

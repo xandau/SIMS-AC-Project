@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
 
             User? access_user = await _repository.GetAsync(token_id);
 
-            if (access_user.Role != Enums.ERoles.ADMIN || token_id != id)
+            if (access_user.Role != Enums.ERoles.ADMIN && token_id != id)
                 return Forbid();
 
             User? e = await _repository.GetAsync(id, access_token);

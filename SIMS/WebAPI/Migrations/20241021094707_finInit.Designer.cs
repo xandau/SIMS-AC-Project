@@ -12,7 +12,7 @@ using WebAPI;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(SIMSContext))]
-    [Migration("20241021074511_finInit")]
+    [Migration("20241021094707_finInit")]
     partial class finInit
     {
         /// <inheritdoc />
@@ -176,13 +176,11 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("User", "AssignedPerson")
                         .WithMany("AssignedTickets")
-                        .HasForeignKey("AssignedPersonID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("AssignedPersonID");
 
                     b.HasOne("User", "Creator")
                         .WithMany("CreatedTickets")
-                        .HasForeignKey("CreatorID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CreatorID");
 
                     b.Navigation("AssignedPerson");
 
