@@ -70,7 +70,7 @@ export class EditUserComponent implements OnInit {
       'Content-Type': 'application/json'
     });
 
-    this.http.get(`${this.apiUrl}:7292/user/${this.userId}`, { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/user/${this.userId}`, { headers }).subscribe({
       next: (response: any) => {
         this.editUserForm.patchValue(response);
         this.isLoading = false;
