@@ -91,6 +91,8 @@ namespace WebAPI
 
             var app = builder.Build();
 
+            MigrateDatabase(app);
+
             // Middleware
             app.UseMiddleware<Middleware>();
 
@@ -112,8 +114,6 @@ namespace WebAPI
             app.UseAuthorization();
 
             app.MapControllers();
-
-            MigrateDatabase(app);
 
             app.Run();
         }

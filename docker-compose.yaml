@@ -27,7 +27,6 @@ services:
         ipv4_address: 172.30.0.3
     restart: unless-stopped
 
-
   angular-app:
     build:
       context: .\SIMS\AngularClient\hello-world
@@ -55,6 +54,9 @@ services:
     networks:
       sims_network:
         ipv4_address: 172.30.0.5
+    depends_on:
+      - sql1
+      - redis
     restart: always
 
 networks:
