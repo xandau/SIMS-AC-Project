@@ -138,6 +138,23 @@ namespace WebAPI
             {
                 connection.Open();
 
+                // Check if the user with a specific ID exists (e.g., user ID = 1)
+                string checkQuery = "SELECT COUNT(*) FROM USERS WHERE ID = @Id";
+
+                // Check if user ID 1 exists
+                using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@Id", 1); // Replace with actual UUID of the user you want to check
+
+                    int userCount = (int)checkCommand.ExecuteScalar(); 
+
+                    if (userCount > 0)
+                    {
+                        Console.WriteLine("User with ID '1' already exists. Skipping creation.");
+                        return; 
+                    }
+                }
+
                 User user = new User()
                 {
                     UserUUID = Guid.NewGuid(),
@@ -152,21 +169,24 @@ namespace WebAPI
                 user.SetPassword(password);
 
                 string query = "INSERT INTO USERS (User_UUID, USERNAME, FIRSTNAME, LASTNAME, PASSWORD_HASH, PASSWORD_SALT, EMAIL, ROLE, BLOCKED) " +
-                       "VALUES (@UserUUID, @Username, @Firstname, @Lastname, @PasswordHash, @PasswordSalt, @Email, @Role, @Blocked)";
+                               "VALUES (@UserUUID, @Username, @Firstname, @Lastname, @PasswordHash, @PasswordSalt, @Email, @Role, @Blocked)";
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@UserUUID", user.UserUUID);
-                command.Parameters.AddWithValue("@Username", user.UserName);
-                command.Parameters.AddWithValue("@Firstname", user.FirstName);
-                command.Parameters.AddWithValue("@Lastname", user.LastName);
-                command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-                command.Parameters.AddWithValue("@PasswordSalt", user.PasswordSalt);
-                command.Parameters.AddWithValue("@Email", user.Email);
-                command.Parameters.AddWithValue("@Role", user.Role);
-                command.Parameters.AddWithValue("@Blocked", user.Blocked);
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserUUID", user.UserUUID);
+                    command.Parameters.AddWithValue("@Username", user.UserName);
+                    command.Parameters.AddWithValue("@Firstname", user.FirstName);
+                    command.Parameters.AddWithValue("@Lastname", user.LastName);
+                    command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    command.Parameters.AddWithValue("@PasswordSalt", user.PasswordSalt);
+                    command.Parameters.AddWithValue("@Email", user.Email);
+                    command.Parameters.AddWithValue("@Role", user.Role);
+                    command.Parameters.AddWithValue("@Blocked", user.Blocked);
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
             }
+
         }
     }
 }
