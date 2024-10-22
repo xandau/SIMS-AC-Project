@@ -84,14 +84,12 @@ namespace WebAPI
             builder.Services.AddScoped<AuthRepository>();
 
             // Add and configure CORS policy
-            
             builder.Services.AddCors(options =>
             {
             });
 
             var app = builder.Build();
 
-            MigrateDatabase(app);
             MigrateDatabase(app, secretData, adminPassword);
 
             // Middleware
@@ -116,7 +114,6 @@ namespace WebAPI
             app.Run();
         }
 
-        private static void MigrateDatabase(WebApplication app)
         private static void MigrateDatabase(WebApplication app, string? secretData, string? password)
         {
             using (var scope = app.Services.CreateScope())
