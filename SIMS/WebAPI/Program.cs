@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -24,7 +25,7 @@ namespace WebAPI
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
-                // Json-Error für Cycle-Object - so wird Fehler ignoriert
+                // Json-Error fï¿½r Cycle-Object - so wird Fehler ignoriert
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -36,12 +37,14 @@ namespace WebAPI
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
             string? secretData = config["ConnectionStrings-SQL"];
             string? secretKey = config["JWTSettings-Secret"];
+            string? adminPassword = config["Admin-Password"];
 
 
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
             string? secretData = config["ConnectionStrings-SQL"];
             string? secretKey = config["JWTSettings-Secret"];
+            string? adminPassword = config["Admin-Password"];
 #endif
             // Register DbContext
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
@@ -96,6 +99,8 @@ namespace WebAPI
             */
             var app = builder.Build();
 
+            MigrateDatabase(app, secretData, adminPassword);
+
             // Middleware
             app.UseMiddleware<Middleware>();
    
@@ -125,12 +130,46 @@ namespace WebAPI
             app.Run();
         }
 
-        private static void MigrateDatabase(WebApplication app)
+        private static void MigrateDatabase(WebApplication app, string? secretData, string? password)
         {
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<SIMSContext>().Database;
                 scope.ServiceProvider.GetRequiredService<SIMSContext>().Database.Migrate();
+            }
+
+            using (SqlConnection connection = new SqlConnection(secretData))
+            {
+                connection.Open();
+
+                User user = new User()
+                {
+                    UserUUID = Guid.NewGuid(),
+                    Email = "admin@admin.at",
+                    UserName = "Administrator",
+                    FirstName = "Admin",
+                    LastName = "Admin",
+                    Blocked = false,
+                    Role = Enums.ERoles.ADMIN,
+                };
+
+                user.SetPassword(password);
+
+                string query = "INSERT INTO USERS (User_UUID, USERNAME, FIRSTNAME, LASTNAME, PASSWORD_HASH, PASSWORD_SALT, EMAIL, ROLE, BLOCKED) " +
+                       "VALUES (@UserUUID, @Username, @Firstname, @Lastname, @PasswordHash, @PasswordSalt, @Email, @Role, @Blocked)";
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserUUID", user.UserUUID);
+                command.Parameters.AddWithValue("@Username", user.UserName);
+                command.Parameters.AddWithValue("@Firstname", user.FirstName);
+                command.Parameters.AddWithValue("@Lastname", user.LastName);
+                command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                command.Parameters.AddWithValue("@PasswordSalt", user.PasswordSalt);
+                command.Parameters.AddWithValue("@Email", user.Email);
+                command.Parameters.AddWithValue("@Role", user.Role);
+                command.Parameters.AddWithValue("@Blocked", user.Blocked);
+
+                command.ExecuteNonQuery();
             }
         }
     }
