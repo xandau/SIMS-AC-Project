@@ -22,7 +22,6 @@ Current Version: **v1.0**
 
 This project is licensed under the **MIT license**. Details about the license can be found in the file [LICENSE](https://mit-license.org/).   
 
-
 ## Contributors
 
 - **Benjamin Borenich** - Frontend-Developer - is231024@fhstp.ac.at
@@ -50,6 +49,8 @@ This project is licensed under the **MIT license**. Details about the license ca
 - Fixed repository (thanks beni ;) )
 ### Version 0.7 (20.10.2024)
 - Docker integration
+### Version 0.8 (22.10.2024)
+- Fixed CORS error with NGINX-Proxy-Server
 
 ## Program functionality and Features 
 A user can register himself on the website. In the background the user is stored in a MSSQL-Database. After the registration the user is able to login on the webapp which gives him access to create tickets concerning security or even view and assign open tickets. When logging in the user receives a access and refresh token, technically speaking JWT-Tokens. The access token is to authorize the client on the backend and with the refresh token a new access token can be created without the input of credentials. Refresh tokens are stored in a Redis-NoSQL-Database.
@@ -62,6 +63,10 @@ Logs about the CRUD operations of users and tickets can also be viewed, created,
 
 The backend provides an API and the main logic of the system. It connects to the two Databases, Redis and MSSQL. It communicated with the Angular-Webapp to provide the user with its features. The MSSQL database is crucial for the services otherwise the system can not meet the needs of the consumers. The NoSQL-Database is only crucial for login or refresh operation in other words for giving the user its access tokens. Both database are checked for connectivity with the use of a middleware. If one of them is not able to be conntacted a error message is printed. In this way the backend is prevented from crashing.
 
+When starting the docker container, a migrations and database are automatically created. Even the admin user is created after starting the WebApi container. To open the website open http://localhost:8082 in your browser. 
+
+When creating a ticket an assigned person id field is required - the person id is the user id from the database. The created admin has an id of "1" so it can be used for testing.
+
 ## System requirements
 
 - **CPU**: 2 Kerne (depending on load)
@@ -73,23 +78,26 @@ The backend provides an API and the main logic of the system. It connects to the
   - .NET 8 Runtime
   - Node.js for Angular
   - MSSQL and Redis Container in docker compose
+  - NGINX-Proxy-Container
   - SSL-configuration for web und API security (in this project self-signed certificates are used)
 
 You can also use the docker compose provided in this repository and the dockerfiles for hsoting the frontend and backend.
 
-### Create a .env File with the neccesarry path for the docker database containers
-The .env-file is used in the dockercompose.yml and locates where the database files are persistently stored: ``` DB_DATA_PATH=c:\yourpath_here ```
+### Edit the .env File with the neccesarry path for the docker database containers
+The .env-file is used in the dockercompose.yml and locates where the database files are persistently stored, if you want to change the path change it here: ``` DB_DATA_PATH=.\docker ```
 
 ### Add dockersettings.env
 
 In the ``` dockersettings.env ``` environment variable are stored for the C#-Application which are used in the build. Create this file in the same directory as the compose file.
+Please set a password for the administrator and a secure key for your JWT-Tokens wiht 256 Bit.
 Example:
 
 ```
 ASPNETCORE_ENVIRONMENT=Production
 JWTSettings-Secret=yourSecretKey
 ConnectionStrings-SQL=Server=172.30.0.2,1433;Database=SIMS;User Id=yourUsername; Password=yourSecurePassword;TrustServerCertificate=True
-ConnectionStrings-REDIS=172.30.0.3,6379 
+ConnectionStrings-REDIS=172.30.0.3,6379
+Admin-Password=Admin1234 
 ```
 ## UML-Diagram
 
@@ -118,10 +126,6 @@ In this diagram the three items are shown which are created by the Entity Framew
 ## Static Security Application Tests
 
 The frontend and backend have been checked using [Semgrep](https://semgrep.dev/) in order to automatically test for security weaknesses. The results are displayed below. 
-
-### Frontend
-
-<img src="https://github.com/xandau/SIMS-AC-Project/blob/main/doku/Semgrep_frontend.png" alt="coming soon">
 
 ### Backend
 
