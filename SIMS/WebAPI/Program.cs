@@ -104,8 +104,6 @@ namespace WebAPI
             // Middleware
             app.UseMiddleware<Middleware>();
    
-
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -124,8 +122,6 @@ namespace WebAPI
             app.UseAuthorization();
 
             app.MapControllers();
-
-            MigrateDatabase(app);
             // app.UseCors("AllowAllOrigin");
             app.Run();
         }
