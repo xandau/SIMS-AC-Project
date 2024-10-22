@@ -33,6 +33,16 @@ namespace WebAPI.Middlewares
             var redisOptions = ConfigurationOptions.Parse(secretDataRedis);
             redisOptions.ConnectTimeout = 5000;
 
+            /*
+
+            if (context.Request.Method == HttpMethods.Options)
+            {
+                // If it's an OPTIONS request, simply return
+                context.Response.StatusCode = StatusCodes.Status204NoContent;
+                return;
+            }
+            */
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(secretData))

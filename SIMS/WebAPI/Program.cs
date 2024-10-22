@@ -80,19 +80,26 @@ namespace WebAPI
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<AuthRepository>();
 
-            // Add and configure CORS policy
+            /*
+            // Add and configure CORS policy -> SECURITY RISK. DO NOT USE IF HOSTING ON A PROPER SERVER
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
-                    policy => policy.WithOrigins("http://localhost:4200")
-                                    .AllowAnyHeader()
-                                    .AllowAnyMethod());
+                options.AddPolicy("AllowAllOrigin", policy =>
+                {
+                    policy.AllowAnyOrigin()       // Allow requests from any origin
+                          .AllowAnyHeader()       // Allow any headers
+                          .AllowAnyMethod()
+                          .WithExposedHeaders("Authorization")
+                          .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+                });
             });
-
+            */
             var app = builder.Build();
 
             // Middleware
             app.UseMiddleware<Middleware>();
+   
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -105,7 +112,7 @@ namespace WebAPI
             //app.UseHttpsRedirection();
 
             // Apply CORS policy
-            app.UseCors("AllowSpecificOrigin");
+            // app.UseCors("AllowSpecificOrigin");
 
             // Authentication and Authorization middleware
             app.UseAuthentication();
@@ -114,7 +121,7 @@ namespace WebAPI
             app.MapControllers();
 
             MigrateDatabase(app);
-
+            // app.UseCors("AllowAllOrigin");
             app.Run();
         }
 

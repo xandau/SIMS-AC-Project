@@ -36,7 +36,7 @@ export class AdminGuard implements CanActivate {
         'Content-Type': 'application/json',
       });
 
-      return this.http.get(`${this.apiUrl}/user/${userId}`, { headers }).pipe(
+      return this.http.get(`${this.apiUrl}/user/${userId}`, { headers, withCredentials: true }).pipe(
         map((response: any) => {
           if (response && response.role === 2) {  // Admin role
             return true;

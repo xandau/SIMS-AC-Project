@@ -36,7 +36,7 @@ export class UserGuard implements CanActivate {
         'Content-Type': 'application/json',
       });
 
-      return this.http.get(`${this.apiUrl}/user/${userId}`, { headers }).pipe(
+      return this.http.get(`${this.apiUrl}/user/${userId}`, { headers, withCredentials: true }).pipe(
         map((response: any) => {
           if (response.role === 1 || response.role === 2) {  // User role  or Admin
             return true;
