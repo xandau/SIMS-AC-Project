@@ -83,20 +83,6 @@ namespace WebAPI
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<AuthRepository>();
 
-            /*
-            // Add and configure CORS policy -> SECURITY RISK. DO NOT USE IF HOSTING ON A PROPER SERVER
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAllOrigin", policy =>
-                {
-                    policy.AllowAnyOrigin()       // Allow requests from any origin
-                          .AllowAnyHeader()       // Allow any headers
-                          .AllowAnyMethod()
-                          .WithExposedHeaders("Authorization")
-                          .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-                });
-            });
-            */
             var app = builder.Build();
 
             MigrateDatabase(app, secretData, adminPassword);
@@ -122,7 +108,6 @@ namespace WebAPI
             app.UseAuthorization();
 
             app.MapControllers();
-            // app.UseCors("AllowAllOrigin");
             app.Run();
         }
 
@@ -138,14 +123,11 @@ namespace WebAPI
             {
                 connection.Open();
 
-                // Check if the user with a specific ID exists (e.g., user ID = 1)
                 string checkQuery = "SELECT COUNT(*) FROM USERS WHERE ID = @Id";
 
-                // Check if user ID 1 exists
                 using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                 {
-                    checkCommand.Parameters.AddWithValue("@Id", 1); // Replace with actual UUID of the user you want to check
-
+                    checkCommand.Parameters.AddWithValue("@Id", 1); 
                     int userCount = (int)checkCommand.ExecuteScalar(); 
 
                     if (userCount > 0)
