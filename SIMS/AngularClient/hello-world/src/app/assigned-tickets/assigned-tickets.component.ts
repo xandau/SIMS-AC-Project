@@ -70,4 +70,24 @@ export class AssignedTicketsComponent implements OnInit {
   editTicket(ticketId: number) {
     this.router.navigate([`/ticket/edit/${ticketId}`]);
   }
+
+  stopInstance(ticketId: number) {
+    const token = this.cookieService.get('accessToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    this.http.post(`${this.apiUrl}/ticket/stop/${ticketId}`, {}, { headers }).subscribe({
+      next: (response: any) => {
+        console.log('Ticket stopped successfully', response);
+        this.fetchAssignedTickets(); // Refresh the list after stopping the ticket
+      },
+      error: (err) => {
+        console.error('Error stopping ticket', err);
+        this.isError = true;
+        this.errorMessage = 'Error stopping ticket. Please try again later.';
+      },
+    });
+  }
 }

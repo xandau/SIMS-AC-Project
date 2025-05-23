@@ -44,6 +44,13 @@
           <input matInput formControlName="assignedPersonID" placeholder="Enter Assigned Person ID" />
         </mat-form-field>
       </div>
+
+      <div class="form-field">
+        <mat-form-field appearance="fill">
+          <mat-label>Assigned Person ID</mat-label>
+          <input matInput formControlName="referenceID" placeholder="Enter referenceID" />
+        </mat-form-field>
+      </div>
   
       <div class="form-field button-field">
         <button mat-raised-button color="primary" type="submit" [disabled]="ticketForm.invalid">Update Ticket</button>
