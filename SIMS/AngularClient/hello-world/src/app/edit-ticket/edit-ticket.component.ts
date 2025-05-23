@@ -61,7 +61,8 @@ export class EditTicketComponent implements OnInit {
       state: ['', [Validators.required]],
       severity: [0, [Validators.required, Validators.min(1), Validators.max(10)]],
       cve: [''],
-      assignedPersonID: [null]
+      assignedPersonID: [null],
+      referenceID: [''],
     });
 
     this.ticketId = Number(this.route.snapshot.paramMap.get('ticketId'));

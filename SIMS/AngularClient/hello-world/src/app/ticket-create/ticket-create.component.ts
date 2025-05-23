@@ -48,6 +48,7 @@ export class TicketCreateComponent {
       Severity: [5, [Validators.required]],                 // Required
       CVE: ['', [Validators.required]],                     // Required
       assignedPersonID: ['', [Validators.required]],        // New required field
+      referenceID: [''],                                   // Optional
     });
   }
 
@@ -69,6 +70,7 @@ export class TicketCreateComponent {
         Severity: this.ticketForm.get('Severity')?.value,
         CVE: this.ticketForm.get('CVE')?.value,
         assignedPersonID: this.ticketForm.get('assignedPersonID')?.value, // New field
+        referenceID: this.ticketForm.get('referenceID')?.value, // Optional field
       };
 
       // Set the headers with the Bearer token

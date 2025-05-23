@@ -25,6 +25,11 @@
       <input matInput formControlName="assignedPersonID" required />
     </mat-form-field>
 
+    <mat-form-field appearance="fill">
+      <mat-label>Refernce ID</mat-label>
+      <input matInput formControlName="referenceID" required />
+    </mat-form-field>
+
     <button mat-raised-button color="primary" type="submit" [disabled]="ticketForm.invalid">Create Ticket</button>
 
     <div *ngIf="isSuccess" class="success-message">
