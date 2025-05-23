@@ -49,7 +49,8 @@ namespace WebAPI.Repository
                 Severity = entity.Severity,
                 CVE = entity.CVE,
                 CreatorID = entity.CreatorID,
-                AssignedPersonID = entity.AssignedPersonID
+                AssignedPersonID = entity.AssignedPersonID,
+                ReferenceID = entity.ReferenceID
             };
 
             _entities.Add(ticket);

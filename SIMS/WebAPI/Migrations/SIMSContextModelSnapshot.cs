@@ -146,6 +146,10 @@ namespace WebAPI.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("DESCRIPTION");
 
+                    b.Property<string>("ReferenceID")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("REFERENCE_ID");
+
                     b.Property<byte>("Severity")
                         .HasColumnType("tinyint")
                         .HasColumnName("SEVERITY");

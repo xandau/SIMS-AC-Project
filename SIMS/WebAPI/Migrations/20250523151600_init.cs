@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class finInit : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,6 +59,7 @@ namespace WebAPI.Migrations
                     CREATION_TIME = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SEVERITY = table.Column<byte>(type: "tinyint", nullable: false),
                     CVE = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    REFERENCE_ID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CREATOR_ID = table.Column<long>(type: "bigint", nullable: true),
                     ASSIGNEDPERSON_ID = table.Column<long>(type: "bigint", nullable: true)
                 },

@@ -12,8 +12,8 @@ using WebAPI;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(SIMSContext))]
-    [Migration("20241021094707_finInit")]
-    partial class finInit
+    [Migration("20250523151600_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -148,6 +148,10 @@ namespace WebAPI.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("DESCRIPTION");
+
+                    b.Property<string>("ReferenceID")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("REFERENCE_ID");
 
                     b.Property<byte>("Severity")
                         .HasColumnType("tinyint")

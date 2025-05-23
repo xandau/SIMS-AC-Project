@@ -35,6 +35,9 @@ namespace WebAPI.Models
         [Column("CVE")]
         public required string CVE { get; set; }
 
+        [Column("REFERENCE_ID")]
+        public string? ReferenceID { get; set; }
+
 
         [Column("CREATOR_ID")]
         public long? CreatorID { get; set; }
