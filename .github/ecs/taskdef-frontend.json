@@ -1,5 +1,5 @@
 {
-  "family": "sims-task",
+  "family": "sims-frontend-task",
   "networkMode": "awsvpc",
   "executionRoleArn": "arn:aws:iam::243202250040:role/ecsTaskExecutionRole",
   "containerDefinitions": [
@@ -8,18 +8,9 @@
       "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/frontend:latest",
       "portMappings": [{ "containerPort": 80 }],
       "essential": true
-    },
-    {
-      "name": "backend",
-      "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/backend:latest",
-      "portMappings": [{ "containerPort": 5000 }],
-      "essential": true,
-      "environment": [
-        { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
-      ]
     }
   ],
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "1024",
-  "memory": "2048"
+  "cpu": "512",
+  "memory": "1024"
 }

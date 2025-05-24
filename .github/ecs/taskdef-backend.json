@@ -1,0 +1,16 @@
+{
+  "family": "sims-backend-task",
+  "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::243202250040:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/backend:latest",
+      "portMappings": [{ "containerPort": 80 }],
+      "essential": true
+    }
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024"
+}
