@@ -7,8 +7,22 @@
       "name": "backend",
       "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/backend:latest",
       "portMappings": [{ "containerPort": 80 }],
-      "essential": true
-    }
+      "essential": true,
+      "secrets": [
+      {
+        "name": "ConnectionStrings__DefaultConnection",
+        "valueFrom": "DB_SECRET_ARN_PLACEHOLDER"
+      },
+      {
+        "name": "Redis__Configuration",
+        "valueFrom": "REDIS_SECRET_ARN_PLACEHOLDER"
+      }
+    ],
+     "environment": [
+       { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
+     ]
+   }
+    
   ],
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
