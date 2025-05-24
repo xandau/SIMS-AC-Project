@@ -81,7 +81,7 @@ export class CreatedTicketsComponent implements OnInit {
     this.http.post(`${this.apiUrl}/ticket/stop/${ticketId}`, {}, { headers }).subscribe({
       next: (response: any) => {
         console.log('Ticket stopped successfully', response);
-        this.fetchAssignedTickets(); // Refresh the list after stopping the ticket
+        this.fetchCreatedTickets(); // Refresh the list after stopping the ticket
       },
       error: (err) => {
         console.error('Error stopping ticket', err);
