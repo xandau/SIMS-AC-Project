@@ -1,0 +1,69 @@
+name: Create Docker Images and Push to AWS
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:        ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Compute version tag
+        run: |
+          # Use the run number as the image version
+          echo "IMAGE_TAG=v${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Build, tag, and push backend image to ECR
+        env:
+          ECR_REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: sims/backend
+          IMAGE_TAG:      ${{ env.IMAGE_TAG }}
+        run: |
+          # Build the Docker image with the dynamic tag
+          docker build \
+            --file SIMS/WebAPI/Dockerfile \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            SIMS/WebAPI
+
+          # Push the versioned image
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          # Tag and push 'latest'
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+                     $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+
+      - name: Build, tag, and push frontend image to ECR
+        env:
+          ECR_REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: sims/frontend
+          IMAGE_TAG:      ${{ env.IMAGE_TAG }}
+        run: |
+          # Build the Docker image with the dynamic tag
+          docker build \
+            --file SIMS/AngularClient/hello-world/Dockerfile \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            SIMS/AngularClient/hello-world
+            
+          # Push the versioned image
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          # Tag and push 'latest'
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+                     $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
