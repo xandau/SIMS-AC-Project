@@ -1,0 +1,65 @@
+# .github/workflows/deploy.yml
+name: Deploy to ECS Fargate
+
+on:
+  push:
+    branches: [ main ]
+    # only run after your build workflow has pushed images
+    # you can optionally filter on paths if you like:
+    #   paths:
+    #     - '.github/ecs/taskdef.json'
+    #     - 'any-other-path/you-care-about/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION:    ${{ secrets.AWS_REGION }}
+      ECR_REGISTRY:  ${{ secrets.ECR_REGISTRY }}
+      CLUSTER_NAME:  ${{ secrets.CLUSTER_NAME }}
+      SERVICE_NAME:  ${{ secrets.SERVICE_NAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      # Pull latest image tags into variables
+      - name: Set image tags
+        run: |
+          # match exactly what your build workflow used!
+          TAG=${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}
+          echo "FRONTEND_IMAGE=${ECR_REGISTRY}/${{ secrets.FRONTEND_REPO }}:${TAG}" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE=${ECR_REGISTRY}/${{ secrets.BACKEND_REPO }}:${TAG}" >> $GITHUB_ENV
+
+      # Swap in the frontend image
+      - name: Render task definition (frontend)
+        id: render-frontend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: .github/ecs/taskdef.json
+          container-name:  frontend
+          image:           ${{ env.FRONTEND_IMAGE }}
+
+      # Swap in the backend image too
+      - name: Render task definition (backend)
+        id: render-backend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-frontend.outputs.task-definition }}
+          container-name:  backend
+          image:           ${{ env.BACKEND_IMAGE }}
+
+      # Deploy the newly rendered task definition
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition:            ${{ steps.render-backend.outputs.task-definition }}
+          service:                    ${{ env.SERVICE_NAME }}
+          cluster:                    ${{ env.CLUSTER_NAME }}
+          wait-for-service-stability: true
