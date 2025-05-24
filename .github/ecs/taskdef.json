@@ -1,7 +1,7 @@
 {
   "family": "sims-task",
   "networkMode": "awsvpc",
-  "executionRoleArn": "arn:aws:iam::123456789012:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::243202250040:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "name": "frontend",
