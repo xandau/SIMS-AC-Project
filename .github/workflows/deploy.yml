@@ -38,7 +38,7 @@ jobs:
           echo "BACKEND_IMAGE=${ECR_REGISTRY}/${BACKEND_REPO}:${TAG}" >> $GITHUB_ENV
 
       - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       # ── Frontend ────────────────────────────────────────────────────────────
 
@@ -53,9 +53,9 @@ jobs:
       - name: Register frontend task definition
         id: register-frontend
         run: |
-          echo "${{ steps.render-frontend.outputs.task-definition }}" > taskdef-frontend.json
+          TD_FILE="${{ steps.render-frontend.outputs.task-definition }}"
           ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://taskdef-frontend.json \
+            --cli-input-json file://$TD_FILE \
             --query 'taskDefinition.taskDefinitionArn' \
             --output text)
           echo "task-def-arn=$ARN" >> $GITHUB_OUTPUT
@@ -97,9 +97,9 @@ jobs:
       - name: Register backend task definition
         id: register-backend
         run: |
-          echo "${{ steps.render-backend.outputs.task-definition }}" > taskdef-backend.json
+          TD_FILE="${{ steps.render-backend.outputs.task-definition }}"
           ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://taskdef-backend.json \
+            --cli-input-json file://$TD_FILE \
             --query 'taskDefinition.taskDefinitionArn' \
             --output text)
           echo "task-def-arn=$ARN" >> $GITHUB_OUTPUT
