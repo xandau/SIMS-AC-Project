@@ -16,12 +16,13 @@ using WebAPI.Repository;
 using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using System.Text.Json;
 
 namespace WebAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ namespace WebAPI
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
-                // Json-Error f�r Cycle-Object - so wird Fehler ignoriert
+                // Json-Error für Cycle-Object - so wird Fehler ignoriert
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -46,12 +47,22 @@ namespace WebAPI
 
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            string? secretData = config["ConnectionStrings-SQL"];
+            JsonDocument secretData = await GetSecret();
+            string? baseConnectionString = config["ConnectionString-SQL"]; // Retrieve base connection string from environment variables
             string? secretKey = config["JWTSettings-Secret"];
             string? adminPassword = config["Admin-Password"];
 #endif
             // Register DbContext
+#if DEBUG
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(secretData));
+#else
+            // Build the complete connection string
+            string? username = secretData.RootElement.GetProperty("username").GetString();
+            string? password = secretData.RootElement.GetProperty("password").GetString();
+            string connectionString = $"{baseConnectionString}User ID={username};Password={password};";
+
+            builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(connectionString));
+#endif
 
             // JWT and Authentication setup
 
@@ -89,7 +100,15 @@ namespace WebAPI
 
             var app = builder.Build();
 
+#if DEBUG
             MigrateDatabase(app, secretData, adminPassword);
+#else
+            // Build the complete connection string
+            //string usernameAdmin = secretData.RootElement.GetProperty("username").GetString();
+            //string passwordAdmin = secretData.RootElement.GetProperty("password").GetString();
+            //string connectionStringAdmin = $"{baseConnectionString};User ID={usernameAdmin};Password={passwordAdmin};";
+            MigrateDatabase(app, connectionString, adminPassword);
+#endif
 
             // Middleware
             app.UseMiddleware<Middleware>();
@@ -115,7 +134,7 @@ namespace WebAPI
             app.Run();
         }
 
-        static async Task GetSecret()
+        static async Task<JsonDocument> GetSecret()
         {
             string secretName = "rds!db-1c56e640-dff0-4bce-aa20-2cff1209ee86";
             string region = "eu-central-1";
@@ -142,6 +161,9 @@ namespace WebAPI
             }
 
             string secret = response.SecretString;
+
+            JsonDocument jsonDocument = JsonDocument.Parse(secret);
+            return jsonDocument;
 
             // Your code goes here
         }
