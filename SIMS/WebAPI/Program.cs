@@ -104,10 +104,10 @@ namespace WebAPI
             MigrateDatabase(app, secretData, adminPassword);
 #else
             // Build the complete connection string
-            //string usernameAdmin = secretData.RootElement.GetProperty("username").GetString();
-            //string passwordAdmin = secretData.RootElement.GetProperty("password").GetString();
-            //string connectionStringAdmin = $"{baseConnectionString};User ID={usernameAdmin};Password={passwordAdmin};";
-            MigrateDatabase(app, connectionString, adminPassword);
+            string? usernameAdmin = secretData.RootElement.GetProperty("username").GetString();
+            string? passwordAdmin = secretData.RootElement.GetProperty("password").GetString();
+            string connectionStringAdmin = $"{baseConnectionString}User ID={usernameAdmin};Password={passwordAdmin};";
+            MigrateDatabase(app, connectionStringAdmin, adminPassword);
 #endif
 
             // Middleware
@@ -178,51 +178,66 @@ namespace WebAPI
 
             using (SqlConnection connection = new SqlConnection(secretData))
             {
-                connection.Open();
-
-                string checkQuery = "SELECT COUNT(*) FROM USERS WHERE ID = @Id";
-
-                using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
+                try
                 {
-                    checkCommand.Parameters.AddWithValue("@Id", 1); 
-                    int userCount = (int)checkCommand.ExecuteScalar(); 
+                    connection.Open();
 
-                    if (userCount > 0)
+                    string checkQuery = "SELECT COUNT(*) FROM USERS WHERE ID = @Id";
+
+                    using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {
-                        Console.WriteLine("User with ID '1' already exists. Skipping creation.");
-                        return; 
+                        checkCommand.Parameters.AddWithValue("@Id", 1);
+                        int userCount = (int)checkCommand.ExecuteScalar();
+
+                        if (userCount > 0)
+                        {
+                            Console.WriteLine("User with ID '1' already exists. Skipping creation.");
+                            return;
+                        }
+                    }
+
+                    User user = new User()
+                    {
+                        UserUUID = Guid.NewGuid(),
+                        Email = "admin@admin.at",
+                        UserName = "Administrator",
+                        FirstName = "Admin",
+                        LastName = "Admin",
+                        Blocked = false,
+                        Role = Enums.ERoles.ADMIN,
+                    };
+
+                    user.SetPassword(password);
+
+                    string query = "INSERT INTO USERS (User_UUID, USERNAME, FIRSTNAME, LASTNAME, PASSWORD_HASH, PASSWORD_SALT, EMAIL, ROLE, BLOCKED) " +
+                                   "VALUES (@UserUUID, @Username, @Firstname, @Lastname, @PasswordHash, @PasswordSalt, @Email, @Role, @Blocked)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@UserUUID", user.UserUUID);
+                        command.Parameters.AddWithValue("@Username", user.UserName);
+                        command.Parameters.AddWithValue("@Firstname", user.FirstName);
+                        command.Parameters.AddWithValue("@Lastname", user.LastName);
+                        command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                        command.Parameters.AddWithValue("@PasswordSalt", user.PasswordSalt);
+                        command.Parameters.AddWithValue("@Email", user.Email);
+                        command.Parameters.AddWithValue("@Role", user.Role);
+                        command.Parameters.AddWithValue("@Blocked", user.Blocked);
+
+                        command.ExecuteNonQuery();
                     }
                 }
-
-                User user = new User()
+                catch (SqlException ex)
                 {
-                    UserUUID = Guid.NewGuid(),
-                    Email = "admin@admin.at",
-                    UserName = "Administrator",
-                    FirstName = "Admin",
-                    LastName = "Admin",
-                    Blocked = false,
-                    Role = Enums.ERoles.ADMIN,
-                };
-
-                user.SetPassword(password);
-
-                string query = "INSERT INTO USERS (User_UUID, USERNAME, FIRSTNAME, LASTNAME, PASSWORD_HASH, PASSWORD_SALT, EMAIL, ROLE, BLOCKED) " +
-                               "VALUES (@UserUUID, @Username, @Firstname, @Lastname, @PasswordHash, @PasswordSalt, @Email, @Role, @Blocked)";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                    Console.WriteLine($"SQL Exception: {ex.Message}");
+                    Console.WriteLine($"SQL Error Number: {ex.Number}");
+                    Console.WriteLine($"SQL Error State: {ex.State}");
+                    Console.WriteLine($"SQL Error Class: {ex.Class}");
+                    throw; // Re-throw the exception to prevent the application from continuing with a broken database connection
+                }
+                finally
                 {
-                    command.Parameters.AddWithValue("@UserUUID", user.UserUUID);
-                    command.Parameters.AddWithValue("@Username", user.UserName);
-                    command.Parameters.AddWithValue("@Firstname", user.FirstName);
-                    command.Parameters.AddWithValue("@Lastname", user.LastName);
-                    command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-                    command.Parameters.AddWithValue("@PasswordSalt", user.PasswordSalt);
-                    command.Parameters.AddWithValue("@Email", user.Email);
-                    command.Parameters.AddWithValue("@Role", user.Role);
-                    command.Parameters.AddWithValue("@Blocked", user.Blocked);
-
-                    command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
 
