@@ -2,6 +2,7 @@
   "family": "sims-backend-task",
   "networkMode": "awsvpc",
   "executionRoleArn": "arn:aws:iam::243202250040:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::243202250040:role/ReadAndWriteSecretManager",
   "containerDefinitions": [
     {
       "name": "backend",
