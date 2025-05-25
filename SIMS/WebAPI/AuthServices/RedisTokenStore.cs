@@ -11,13 +11,25 @@ namespace WebAPI.AuthServices
         {
 #if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            string? secretData = config["ConnectionStrings-REDIS"];
+            string? endpointURL = config["ConnectionStrings-REDIS"];
+            ConfigurationOptions options = new ConfigurationOptions
+            {
+                EndPoints = { endpointURL },
+                Ssl = true
+            };
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            string? secretData = config["ConnectionStrings-REDIS"];
+            string? endpointURL = config["ConnectionStrings-REDIS"];
+            ConfigurationOptions options = new ConfigurationOptions
+            {
+                EndPoints = { endpointURL },
+                Ssl = true
+            };
 #endif
-
-            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(secretData);
+            if (options == null || string.IsNullOrEmpty(endpointURL)) {
+                throw new ArgumentNullException(nameof(endpointURL), "Redis connection endpoint cannot be null or empty.");
+            }
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(options);
             _storage = redis.GetDatabase();
         }
 
