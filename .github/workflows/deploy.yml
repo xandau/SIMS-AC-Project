@@ -21,6 +21,8 @@ jobs:
       BACKEND_SUBNET_IDS:    ${{ secrets.BACKEND_SUBNET_IDS }}
       FRONTEND_SG_IDS:       ${{ secrets.FRONTEND_SG_IDS }}
       BACKEND_SG_IDS:        ${{ secrets.BACKEND_SG_IDS }}
+      BACKEND_DB_SECRET_ARN: ${{ secrets.BACKEND_DB_SECRET_ARN }}
+      BACKEND_REDIS_SECRET_ARN: ${{ secrets.BACKEND_REDIS_SECRET_ARN }}
 
     steps:
       - name: Check out code
@@ -88,11 +90,21 @@ jobs:
 
       # ── Backend ─────────────────────────────────────────────────────────────
 
+      - name: Prepare backend task definition by substituting secrets
+        id: prepare-backend-task-def
+        run: |
+          TASK_DEF_TEMPLATE=".github/ecs/taskdef-backend.json"
+          PROCESSED_TASK_DEF="taskdef-backend-processed.json"
+          cp $TASK_DEF_TEMPLATE $PROCESSED_TASK_DEF
+          sed -i "s|DB_SECRET_ARN_PLACEHOLDER|${BACKEND_DB_SECRET_ARN}|g" $PROCESSED_TASK_DEF
+          sed -i "s|REDIS_SECRET_ARN_PLACEHOLDER|${BACKEND_REDIS_SECRET_ARN}|g" $PROCESSED_TASK_DEF
+          echo "processed-task-def-path=$PROCESSED_TASK_DEF" >> $GITHUB_OUTPUT
+
       - name: Render backend task definition
         id: render-backend
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: .github/ecs/taskdef-backend.json
+          task-definition: ${{ steps.prepare-backend-task-def.outputs.processed-task-def-path }}
           container-name:  backend
           image:           ${{ env.BACKEND_IMAGE }}
 
