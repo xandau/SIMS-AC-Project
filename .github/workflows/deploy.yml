@@ -76,7 +76,7 @@ jobs:
 
           if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
             echo "Service $FRONTEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
-            aws ecs wait service-stable --cluster "$CLUSTER_NAME" --services "$FRONTEND_SERVICE"
+            aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$FRONTEND_SERVICE" # <-- Corrected here
             echo "Service $FRONTEND_SERVICE is stable. Proceeding with update."
             aws ecs update-service \
               --cluster "$CLUSTER_NAME" \
@@ -155,7 +155,7 @@ jobs:
 
           if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
             echo "Service $BACKEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
-            aws ecs wait service-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
+            aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" # <-- Corrected here
             echo "Service $BACKEND_SERVICE is stable. Proceeding with update."
             aws ecs update-service \
               --cluster "$CLUSTER_NAME" \
