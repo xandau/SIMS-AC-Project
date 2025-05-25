@@ -154,12 +154,6 @@ jobs:
           RAW_SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
           SERVICE_STATUS=$(echo "$RAW_SERVICE_STATUS" | xargs) # Trim whitespace from the status
 
-          # If the CLI outputs "None" for a null status, treat it as INACTIVE to trigger delete and recreate.
-          if [ "$SERVICE_STATUS" == "None" ]; then
-            echo "Service $BACKEND_SERVICE status reported as 'None'. Treating as INACTIVE for delete and recreate."
-            SERVICE_STATUS="INACTIVE"
-          fi
-
           if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
             echo "Service $BACKEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
             aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
@@ -169,8 +163,8 @@ jobs:
               --service "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
               --force-new-deployment
-          elif [ "$SERVICE_STATUS" == "INACTIVE" ]; then # This will now also handle the "None" case
-            echo "Service $BACKEND_SERVICE is INACTIVE (or was 'None'). Deleting and recreating."
+          elif [ "$SERVICE_STATUS" == "INACTIVE" ]; then # This now only handles services explicitly reported as INACTIVE
+            echo "Service $BACKEND_SERVICE is INACTIVE. Deleting and recreating."
             aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$BACKEND_SERVICE" --force
             echo "Waiting for service $BACKEND_SERVICE to be deleted..."
             aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
@@ -182,18 +176,12 @@ jobs:
               --desired-count 1 \
               --launch-type Fargate \
               --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}"
-          elif [ "$SERVICE_STATUS" != "NOT_FOUND" ]; then
-            # Service exists but is not ACTIVE or INACTIVE (e.g., DRAINING)
-            echo "Service $BACKEND_SERVICE exists with status $SERVICE_STATUS. Attempting to update."
-            aws ecs update-service \
-              --cluster "$CLUSTER_NAME" \
-              --service "$BACKEND_SERVICE" \
-              --task-definition "$BACK_TASK_DEF_ARN" \
-              --desired-count 1 \
-              --force-new-deployment
-          else
-            # Service does not exist (SERVICE_STATUS is "NOT_FOUND")
-            echo "Service $BACKEND_SERVICE does not exist. Creating new service."
+          elif [ "$SERVICE_STATUS" == "None" ] || [ "$SERVICE_STATUS" == "NOT_FOUND" ]; then # If status is "None" or "NOT_FOUND", create the service
+            if [ "$SERVICE_STATUS" == "None" ]; then
+              echo "Service $BACKEND_SERVICE status reported as 'None'. Creating new service."
+            else # SERVICE_STATUS == "NOT_FOUND"
+              echo "Service $BACKEND_SERVICE does not exist (status: NOT_FOUND). Creating new service."
+            fi
             aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
               --service-name "$BACKEND_SERVICE" \
@@ -201,5 +189,14 @@ jobs:
               --desired-count 1 \
               --launch-type FARGATE \
               --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}"
+          else
+            # Service exists but is not ACTIVE, INACTIVE, "None", or "NOT_FOUND" (e.g., DRAINING, PROVISIONING)
+            echo "Service $BACKEND_SERVICE exists with status $SERVICE_STATUS. Attempting to update."
+            aws ecs update-service \
+              --cluster "$CLUSTER_NAME" \
+              --service "$BACKEND_SERVICE" \
+              --task-definition "$BACK_TASK_DEF_ARN" \
+              --desired-count 1 \
+              --force-new-deployment
           fi
 
