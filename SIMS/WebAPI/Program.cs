@@ -1,3 +1,4 @@
+using Amazon.SecretsManager;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -12,6 +13,9 @@ using WebAPI.Enums;
 using WebAPI.Middlewares;
 using WebAPI.Models;
 using WebAPI.Repository;
+using Amazon;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
 
 namespace WebAPI
 {
@@ -109,6 +113,37 @@ namespace WebAPI
 
             app.MapControllers();
             app.Run();
+        }
+
+        static async Task GetSecret()
+        {
+            string secretName = "rds!db-1c56e640-dff0-4bce-aa20-2cff1209ee86";
+            string region = "eu-central-1";
+
+            IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
+
+            GetSecretValueRequest request = new GetSecretValueRequest
+            {
+                SecretId = secretName,
+                VersionStage = "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified.
+            };
+
+            GetSecretValueResponse response;
+
+            try
+            {
+                response = await client.GetSecretValueAsync(request);
+            }
+            catch (Exception e)
+            {
+                // For a list of the exceptions thrown, see
+                // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+                throw e;
+            }
+
+            string secret = response.SecretString;
+
+            // Your code goes here
         }
 
         private static void MigrateDatabase(WebApplication app, string? secretData, string? password)
