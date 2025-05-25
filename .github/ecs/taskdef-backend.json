@@ -6,8 +6,10 @@
     {
       "name": "backend",
       "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/backend:latest",
-      "portMappings": [{ "containerPort": 8080, "hostPort": 8080 }, 
-                      { "containerPort": 443, "hostPort": 443 }],
+      "portMappings": [
+        { "containerPort": 8080, "hostPort": 8080 },
+        { "containerPort": 8081, "hostPort": 8081 }
+      ],
       "essential": true,
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -17,11 +19,28 @@
           "awslogs-stream-prefix": "ecs"
         }
       },
-     "environment": [
-       { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
-     ]
-   }
-    
+      "environment": [
+        { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
+      ],
+      "secrets": [
+        {
+          "name": "ConnectionStrings-SQL",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:rds!db-1c56e640-dff0-4bce-aa20-2cff1209ee86-H4gaMQ"
+        },
+        {
+          "name": "JWTSettings-Secret",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:JWTSettings-Vt8BNy"
+        },
+        {
+          "name": "ConnectionStrings-REDIS",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:REDIS-Connectionstring-BLEpsO"
+        },
+        {
+          "name": "Admin-Password",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:Backend-AdminCredentials-6oKBVI"
+        }
+      ]
+    }
   ],
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
