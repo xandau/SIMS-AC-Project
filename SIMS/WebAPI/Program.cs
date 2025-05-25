@@ -106,7 +106,8 @@ namespace WebAPI
             // Build the complete connection string
             string? usernameAdmin = secretData.RootElement.GetProperty("username").GetString();
             string? passwordAdmin = secretData.RootElement.GetProperty("password").GetString();
-            string connectionStringAdmin = $"{baseConnectionString}User ID={usernameAdmin};Password={passwordAdmin};";
+            string connectionStringAdmin = $"{baseConnectionString}User Id={usernameAdmin};Password={passwordAdmin};";
+            Console.WriteLine("Connectionstring: " + connectionStringAdmin);
             MigrateDatabase(app, connectionStringAdmin, adminPassword);
 #endif
 
@@ -144,7 +145,6 @@ namespace WebAPI
             GetSecretValueRequest request = new GetSecretValueRequest
             {
                 SecretId = secretName,
-                VersionStage = "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified.
             };
 
             GetSecretValueResponse response;
