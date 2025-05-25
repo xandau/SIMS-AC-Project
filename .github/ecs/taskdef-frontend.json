@@ -11,7 +11,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/sims-backend-task",
+          "awslogs-group": "/ecs/sims-frontend-task",
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
         }
