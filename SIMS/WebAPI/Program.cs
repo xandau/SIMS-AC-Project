@@ -139,7 +139,7 @@ namespace WebAPI
             string secretName = "rds!db-1c56e640-dff0-4bce-aa20-2cff1209ee86";
             string region = "eu-central-1";
 
-            IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
+            IAmazonSecretsManager client = new AmazonSecretsManagerClient();
 
             GetSecretValueRequest request = new GetSecretValueRequest
             {
