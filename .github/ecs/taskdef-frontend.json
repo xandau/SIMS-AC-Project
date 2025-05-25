@@ -7,7 +7,15 @@
       "name": "frontend",
       "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/frontend:latest",
       "portMappings": [{ "containerPort": 80 }],
-      "essential": true
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/sims-backend-task",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
     }
   ],
   "requiresCompatibilities": ["FARGATE"],
