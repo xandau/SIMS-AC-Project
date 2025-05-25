@@ -44,7 +44,7 @@ jobs:
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      # ── Frontend ────────────────────────────────────────────────────────────
+      # Frontend 
 
       - name: Render frontend task definition
         id: render-frontend
@@ -99,7 +99,7 @@ jobs:
               --launch-type FARGATE \
               --network-configuration "awsvpcConfiguration={subnets=[${FRONTEND_SUBNET_IDS}],securityGroups=[${FRONTEND_SG_IDS}],assignPublicIp=ENABLED}"
 
-      # ── Backend ─────────────────────────────────────────────────────────────
+      # Backend 
 
       - name: Prepare backend task definition by substituting secrets
         id: prepare-backend-task-def
