@@ -151,7 +151,8 @@ jobs:
         env:
           BACK_TASK_DEF_ARN: ${{ steps.register-backend.outputs.task-def-arn }}
         run: |
-          SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
+          RAW_SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
+          SERVICE_STATUS=$(echo "$RAW_SERVICE_STATUS" | xargs) # Trim whitespace from the status
 
           # If the CLI outputs "None" for a null status, treat it as INACTIVE to trigger delete and recreate.
           if [ "$SERVICE_STATUS" == "None" ]; then
