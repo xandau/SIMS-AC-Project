@@ -11,11 +11,11 @@
       "secrets": [
       {
         "name": "ConnectionStrings__DefaultConnection",
-        "valueFrom": "DB_SECRET_ARN_PLACEHOLDER"
+        "valueFrom": "BACKEND_DB_SECRET_ARN"
       },
       {
         "name": "Redis__Configuration",
-        "valueFrom": "REDIS_SECRET_ARN_PLACEHOLDER"
+        "valueFrom": "REDIS_SECRET_ARN"
       }
     ],
      "environment": [
