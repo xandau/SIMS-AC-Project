@@ -59,7 +59,7 @@ namespace WebAPI
             // Build the complete connection string
             string? username = secretData.RootElement.GetProperty("username").GetString();
             string? password = secretData.RootElement.GetProperty("password").GetString();
-            string connectionString = $"{baseConnectionString}User ID={username};Password={password};";
+            string connectionString = $"{baseConnectionString}User Id={username};Password={password};";
 
             builder.Services.AddDbContext<SIMSContext>(options => options.UseSqlServer(connectionString));
 #endif
@@ -104,11 +104,8 @@ namespace WebAPI
             MigrateDatabase(app, secretData, adminPassword);
 #else
             // Build the complete connection string
-            string? usernameAdmin = secretData.RootElement.GetProperty("username").GetString();
-            string? passwordAdmin = secretData.RootElement.GetProperty("password").GetString();
-            string connectionStringAdmin = $"{baseConnectionString}User Id={usernameAdmin};Password={passwordAdmin};";
-            Console.WriteLine("Connectionstring: " + connectionStringAdmin);
-            MigrateDatabase(app, connectionStringAdmin, adminPassword);
+            Console.WriteLine("Connectionstring: " + connectionString);
+            MigrateDatabase(app, connectionString, adminPassword);
 #endif
 
             // Middleware
