@@ -153,17 +153,23 @@ jobs:
         run: |
           SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
 
+          # If the CLI outputs "None" for a null status, treat it as INACTIVE to trigger delete and recreate.
+          if [ "$SERVICE_STATUS" == "None" ]; then
+            echo "Service $BACKEND_SERVICE status reported as 'None'. Treating as INACTIVE for delete and recreate."
+            SERVICE_STATUS="INACTIVE"
+          fi
+
           if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
             echo "Service $BACKEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
-            aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" # <-- Corrected here
+            aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
             echo "Service $BACKEND_SERVICE is stable. Proceeding with update."
             aws ecs update-service \
               --cluster "$CLUSTER_NAME" \
               --service "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
               --force-new-deployment
-          elif [ "$SERVICE_STATUS" == "INACTIVE" ]; then
-            echo "Service $BACKEND_SERVICE is INACTIVE. Deleting and recreating."
+          elif [ "$SERVICE_STATUS" == "INACTIVE" ]; then # This will now also handle the "None" case
+            echo "Service $BACKEND_SERVICE is INACTIVE (or was 'None'). Deleting and recreating."
             aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$BACKEND_SERVICE" --force
             echo "Waiting for service $BACKEND_SERVICE to be deleted..."
             aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
@@ -185,7 +191,7 @@ jobs:
               --desired-count 1 \
               --force-new-deployment
           else
-            # Service does not exist
+            # Service does not exist (SERVICE_STATUS is "NOT_FOUND")
             echo "Service $BACKEND_SERVICE does not exist. Creating new service."
             aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
