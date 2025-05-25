@@ -6,23 +6,41 @@
     {
       "name": "backend",
       "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/backend:latest",
-      "portMappings": [{ "containerPort": 80 }],
+      "portMappings": [
+        { "containerPort": 8080, "hostPort": 8080 },
+        { "containerPort": 8081, "hostPort": 8081 }
+      ],
       "essential": true,
-      "secrets": [
-      {
-        "name": "ConnectionStrings__DefaultConnection",
-        "valueFrom": "BACKEND_DB_SECRET_ARN"
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/sims-backend-task",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
       },
-      {
-        "name": "Redis__Configuration",
-        "valueFrom": "REDIS_SECRET_ARN"
-      }
-    ],
-     "environment": [
-       { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
-     ]
-   }
-    
+      "environment": [
+        { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
+      ],
+      "secrets": [
+        {
+          "name": "ConnectionStrings-SQL",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:SQL-ConnectionString-9wNyQ2"
+        },
+        {
+          "name": "JWTSettings-Secret",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:JWTSettings-Vt8BNy"
+        },
+        {
+          "name": "ConnectionStrings-REDIS",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:REDIS-Connectionstring-BLEpsO"
+        },
+        {
+          "name": "Admin-Password",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:Backend-AdminCredentials-6oKBVI"
+        }
+      ]
+    }
   ],
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",

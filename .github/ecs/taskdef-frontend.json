@@ -15,7 +15,10 @@
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
         }
-      }
+      },
+      "environment": [
+        { "name": "REACT_APP_BACKEND_URL", "value": "http://backend.sims-namespace/" }
+      ]
     }
   ],
   "requiresCompatibilities": ["FARGATE"],
