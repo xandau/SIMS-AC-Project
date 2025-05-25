@@ -6,18 +6,17 @@
     {
       "name": "backend",
       "image": "243202250040.dkr.ecr.eu-central-1.amazonaws.com/sims/backend:latest",
-      "portMappings": [{ "containerPort": 80 }],
+      "portMappings": [{ "containerPort": 8080, "hostPort": 8080 }, 
+                      { "containerPort": 443, "hostPort": 443 }],
       "essential": true,
-      "secrets": [
-      {
-        "name": "ConnectionStrings__DefaultConnection",
-        "valueFrom": "BACKEND_DB_SECRET_ARN"
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/sims-backend",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
       },
-      {
-        "name": "Redis__Configuration",
-        "valueFrom": "REDIS_SECRET_ARN"
-      }
-    ],
      "environment": [
        { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" }
      ]
