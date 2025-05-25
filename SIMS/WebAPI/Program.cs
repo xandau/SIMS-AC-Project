@@ -48,7 +48,7 @@ namespace WebAPI
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
             JsonDocument secretData = await GetSecret();
-            string? baseConnectionString = config["ConnectionString-SQL"]; // Retrieve base connection string from environment variables
+            string? baseConnectionString = config["ConnectionStrings-SQL"]; // Retrieve base connection string from environment variables
             string? secretKey = config["JWTSettings-Secret"];
             string? adminPassword = config["Admin-Password"];
 #endif
