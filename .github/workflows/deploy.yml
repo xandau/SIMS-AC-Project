@@ -68,17 +68,29 @@ jobs:
         env:
           FRONT_TASK_DEF_ARN: ${{ steps.register-frontend.outputs.task-def-arn }}
         run: |
-          if aws ecs describe-services \
-               --cluster "$CLUSTER_NAME" \
-               --services "$FRONTEND_SERVICE" \
-               --query 'services[0].status' --output text \
-               | grep -q "ACTIVE"; then
+          SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$FRONTEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
+
+          if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
+            echo "Service $FRONTEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
+            aws ecs wait service-stable --cluster "$CLUSTER_NAME" --services "$FRONTEND_SERVICE"
+            echo "Service $FRONTEND_SERVICE is stable. Proceeding with update."
             aws ecs update-service \
               --cluster "$CLUSTER_NAME" \
               --service "$FRONTEND_SERVICE" \
               --task-definition "$FRONT_TASK_DEF_ARN" \
               --force-new-deployment
+          elif [ "$SERVICE_STATUS" != "NOT_FOUND" ]; then
+            # Service exists but is not ACTIVE (e.g., INACTIVE, DRAINING)
+            echo "Service $FRONTEND_SERVICE exists with status $SERVICE_STATUS. Attempting to update."
+            aws ecs update-service \
+              --cluster "$CLUSTER_NAME" \
+              --service "$FRONTEND_SERVICE" \
+              --task-definition "$FRONT_TASK_DEF_ARN" \
+              --desired-count 1 \
+              --force-new-deployment
           else
+            # Service does not exist
+            echo "Service $FRONTEND_SERVICE does not exist. Creating new service."
             aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
               --service-name "$FRONTEND_SERVICE" \
@@ -86,7 +98,6 @@ jobs:
               --desired-count 1 \
               --launch-type FARGATE \
               --network-configuration "awsvpcConfiguration={subnets=[${FRONTEND_SUBNET_IDS}],securityGroups=[${FRONTEND_SG_IDS}],assignPublicIp=ENABLED}"
-          fi
 
       # ── Backend ─────────────────────────────────────────────────────────────
 
@@ -122,17 +133,29 @@ jobs:
         env:
           BACK_TASK_DEF_ARN: ${{ steps.register-backend.outputs.task-def-arn }}
         run: |
-          if aws ecs describe-services \
-               --cluster "$CLUSTER_NAME" \
-               --services "$BACKEND_SERVICE" \
-               --query 'services[0].status' --output text \
-               | grep -q "ACTIVE"; then
+          SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
+
+          if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
+            echo "Service $BACKEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
+            aws ecs wait service-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
+            echo "Service $BACKEND_SERVICE is stable. Proceeding with update."
             aws ecs update-service \
               --cluster "$CLUSTER_NAME" \
               --service "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
               --force-new-deployment
+          elif [ "$SERVICE_STATUS" != "NOT_FOUND" ]; then
+            # Service exists but is not ACTIVE (e.g., INACTIVE, DRAINING)
+            echo "Service $BACKEND_SERVICE exists with status $SERVICE_STATUS. Attempting to update."
+            aws ecs update-service \
+              --cluster "$CLUSTER_NAME" \
+              --service "$BACKEND_SERVICE" \
+              --task-definition "$BACK_TASK_DEF_ARN" \
+              --desired-count 1 \
+              --force-new-deployment
           else
+            # Service does not exist
+            echo "Service $BACKEND_SERVICE does not exist. Creating new service."
             aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
               --service-name "$BACKEND_SERVICE" \
