@@ -2,7 +2,7 @@ name: Deploy Frontend & Backend to ECS Fargate
 
 on:
   workflow_run:
-    workflows: ["Create Docker Images and Push to AWS"]   # the exact name of your build workflow
+    workflows: ["Create Docker Images and Push to AWS"]   
     types:
       - completed
 
