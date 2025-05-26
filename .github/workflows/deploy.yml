@@ -130,48 +130,37 @@ jobs:
           sed -i "s|REDIS_SECRET_ARN_PLACEHOLDER|${BACKEND_REDIS_SECRET_ARN}|g" $PROCESSED_TASK_DEF
           echo "processed-task-def-path=$PROCESSED_TASK_DEF" >> $GITHUB_OUTPUT
 
-      - name: Render backend task definition
-        id: render-backend
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.prepare-backend-task-def.outputs.processed-task-def-path }}
-          container-name:  backend
-          image:           ${{ env.BACKEND_IMAGE }}
-
-      - name: Register backend task definition
-        id: register-backend
-        run: |
-          TD_FILE="${{ steps.render-backend.outputs.task-definition }}"
-          ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://$TD_FILE \
-            --query 'taskDefinition.taskDefinitionArn' \
-            --output text)
-          echo "task-def-arn=$ARN" >> $GITHUB_OUTPUT
-
       - name: Create or update backend service
         env:
           BACK_TASK_DEF_ARN: ${{ steps.register-backend.outputs.task-def-arn }}
         run: |
-          RAW_SERVICE_STATUS=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" --query 'services[0].status' --output text 2>/dev/null || echo "NOT_FOUND")
-          SERVICE_STATUS=$(echo "$RAW_SERVICE_STATUS" | xargs) # Trim whitespace from the status
+          STATUS=$(aws ecs describe-services \
+            --cluster "$CLUSTER_NAME" \
+            --services "$BACKEND_SERVICE" \
+            --query 'services[0].status' \
+            --output text 2>/dev/null || echo "NOT_FOUND" | xargs)
 
-          if [ "$SERVICE_STATUS" == "ACTIVE" ]; then
-            echo "Service $BACKEND_SERVICE is ACTIVE. Waiting for it to become stable before update..."
-            aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
-            echo "Service $BACKEND_SERVICE is stable. Proceeding with update."
+          if [ "$STATUS" = "ACTIVE" ]; then
+            echo "Service $BACKEND_SERVICE is ACTIVE. Waiting for stability…"
+            aws ecs wait services-stable \
+              --cluster "$CLUSTER_NAME" \
+              --services "$BACKEND_SERVICE"
+            echo "Updating service to new task definition…"
             aws ecs update-service \
               --cluster "$CLUSTER_NAME" \
               --service "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
-              --force-new-deployment \
-              --desired-count 1 \
-              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8080"
-          elif [ "$SERVICE_STATUS" == "INACTIVE" ]; then # This now only handles services explicitly reported as INACTIVE
-            echo "Service $BACKEND_SERVICE is INACTIVE. Deleting and recreating."
-            aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$BACKEND_SERVICE" --force
-            echo "Waiting for service $BACKEND_SERVICE to be deleted..."
-            aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE"
-            echo "Service $BACKEND_SERVICE deleted. Recreating."
+              --force-new-deployment
+
+          elif [ "$STATUS" = "INACTIVE" ]; then
+            echo "Service $BACKEND_SERVICE is INACTIVE. Recreating…"
+            aws ecs delete-service \
+              --cluster "$CLUSTER_NAME" \
+              --service "$BACKEND_SERVICE" \
+              --force
+            aws ecs wait services-inactive \
+              --cluster "$CLUSTER_NAME" \
+              --services "$BACKEND_SERVICE"
             aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
               --service-name "$BACKEND_SERVICE" \
@@ -180,30 +169,16 @@ jobs:
               --launch-type FARGATE \
               --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}" \
               --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8080"
-          elif [ "$SERVICE_STATUS" == "None" ] || [ "$SERVICE_STATUS" == "NOT_FOUND" ]; then # If status is "None" or "NOT_FOUND", create the service
-            if [ "$SERVICE_STATUS" == "None" ]; then
-              echo "Service $BACKEND_SERVICE status reported as 'None'. Creating new service."
-            else # SERVICE_STATUS == "NOT_FOUND"
-              echo "Service $BACKEND_SERVICE does not exist (status: NOT_FOUND). Creating new service."
-            fi
-            aws ecs create-service \
-              --cluster "$CLUSTER_NAME" \
-              --service-name "$BACKEND_SERVICE" \
-              --task-definition "$BACK_TASK_DEF_ARN" \
-              --desired-count 1 \
-              --launch-type FARGATE \
-              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}" \
-              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8080"
+
           else
-            # Service exists but is not ACTIVE, INACTIVE, "None", or "NOT_FOUND" (e.g., DRAINING, PROVISIONING)
-            echo "Service $BACKEND_SERVICE exists with status $SERVICE_STATUS. Attempting to update."
-            aws ecs update-service \
+            echo "Service $BACKEND_SERVICE not found (or in provisioning). Creating new service…"
+            aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
-              --service "$BACKEND_SERVICE" \
+              --service-name "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
               --desired-count 1 \
+              --launch-type FARGATE \
+              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}" \
               --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8080"
-              --force-new-deployment \
-
           fi
 
