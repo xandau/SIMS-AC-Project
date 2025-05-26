@@ -26,7 +26,7 @@
       "secrets": [
         {
           "name": "ConnectionStrings-SQL",
-          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:SQL-ConnectionString-9wNyQ2:ConnectionStrings-SQL"
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:243202250040:secret:SQL-ConnectionString-9wNyQ2"
         },
         {
           "name": "JWTSettings-Secret",
