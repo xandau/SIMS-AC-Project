@@ -39,7 +39,10 @@ jobs:
 
       - name: Set image tags
         run: |
-          TAG="latest"
+          # Use the run number of the triggering 'Create Docker Images and Push to AWS' workflow.
+          # This matches the 'v<run_number>' tag pushed by that workflow.
+          TRIGGERING_WORKFLOW_RUN_NUMBER=${{ github.event.workflow_run.run_number }}
+          TAG="v${TRIGGERING_WORKFLOW_RUN_NUMBER}"
           echo "Deploying with image tag: ${TAG}"
           echo "FRONTEND_IMAGE=${ECR_REGISTRY}/${FRONTEND_REPO}:${TAG}" >> $GITHUB_ENV
           echo "BACKEND_IMAGE=${ECR_REGISTRY}/${BACKEND_REPO}:${TAG}" >> $GITHUB_ENV
@@ -124,7 +127,7 @@ jobs:
         with:
           task-definition: .github/ecs/taskdef-backend.json
           container-name:  backend
-          image:           ${{ env.BACKEND_IMAGE }}
+          image:           ${{ env.FRONTEND_IMAGE }}
 
       - name: Register frontend task definition
         id: register-backend
@@ -156,11 +159,10 @@ jobs:
               --cluster "$CLUSTER_NAME" \
               --service "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
-              --force-new-deployment \
-              --load-balancers "[]" # Explicitly remove/ensure no load balancer
+              --force-new-deployment
 
           elif [ "$STATUS" = "INACTIVE" ]; then
-            echo "Service $BACKEND_SERVICE is INACTIVE. Recreating (without load balancer)..."
+            echo "Service $BACKEND_SERVICE is INACTIVE. Recreating…"
             aws ecs delete-service \
               --cluster "$CLUSTER_NAME" \
               --service "$BACKEND_SERVICE" \
@@ -174,21 +176,17 @@ jobs:
               --task-definition "$BACK_TASK_DEF_ARN" \
               --desired-count 1 \
               --launch-type FARGATE \
-              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}"
+              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}" \
+              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8080"
 
-          else # Handles NOT_FOUND or any other unexpected status by attempting to create
-            echo "Service $BACKEND_SERVICE status is '$STATUS'. Creating/Recreating service (without load balancer)..."
-            # Attempt to delete if it exists in a weird state, ignore error if not found
-            aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$BACKEND_SERVICE" --force 2>/dev/null || true
-            if [ "$STATUS" != "NOT_FOUND" ]; then # Only wait if it wasn't NOT_FOUND initially
-                aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" 2>/dev/null || true # CORRECTED
-            fi
-            # Ensure create-service is called in the else block
+          else
+            echo "Service $BACKEND_SERVICE not found (or in provisioning). Creating new service…"
             aws ecs create-service \
               --cluster "$CLUSTER_NAME" \
               --service-name "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
               --desired-count 1 \
               --launch-type FARGATE \
-              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}"
-          fi # This fi closes the main if/elif/else block
+              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}" \
+              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8080"
+          fi
