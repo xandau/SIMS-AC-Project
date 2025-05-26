@@ -127,7 +127,7 @@ jobs:
         with:
           task-definition: .github/ecs/taskdef-backend.json
           container-name:  backend
-          image:           ${{ env.FRONTEND_IMAGE }}
+          image:           ${{ env.BACKEND_IMAGE }}
 
       - name: Register frontend task definition
         id: register-backend
