@@ -120,15 +120,23 @@ jobs:
 
       # Backend 
 
-      - name: Prepare backend task definition by substituting secrets
-        id: prepare-backend-task-def
+      - name: Render backend task definition
+        id: render-backend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: .github/ecs/taskdef-backend.json
+          container-name:  backend
+          image:           ${{ env.FRONTEND_IMAGE }}
+
+      - name: Register frontend task definition
+        id: register-backend
         run: |
-          TASK_DEF_TEMPLATE=".github/ecs/taskdef-backend.json"
-          PROCESSED_TASK_DEF="taskdef-backend-processed.json"
-          cp $TASK_DEF_TEMPLATE $PROCESSED_TASK_DEF
-          sed -i "s|DB_SECRET_ARN_PLACEHOLDER|${BACKEND_DB_SECRET_ARN}|g" $PROCESSED_TASK_DEF
-          sed -i "s|REDIS_SECRET_ARN_PLACEHOLDER|${BACKEND_REDIS_SECRET_ARN}|g" $PROCESSED_TASK_DEF
-          echo "processed-task-def-path=$PROCESSED_TASK_DEF" >> $GITHUB_OUTPUT
+          TD_FILE="${{ steps.render-backend.outputs.task-definition }}"
+          ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://$TD_FILE \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+          echo "task-def-arn=$ARN" >> $GITHUB_OUTPUT
 
       - name: Create or update backend service
         env:
