@@ -158,7 +158,6 @@ jobs:
               --cluster "$CLUSTER_NAME" \
               --service "$BACKEND_SERVICE" \
               --task-definition "$BACK_TASK_DEF_ARN" \
-              --desired-count 1 \
               --force-new-deployment
 
           elif [ "$STATUS" = "INACTIVE" ]; then
