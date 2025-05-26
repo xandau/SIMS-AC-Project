@@ -17,7 +17,7 @@
         }
       },
       "environment": [
-        { "name": "REACT_APP_BACKEND_URL", "value": "http://backend.sims-namespace/" }
+        { "name": "REACT_APP_BACKEND_URL", "value": "http://test-lb-1991875074.eu-central-1.elb.amazonaws.com" }
       ]
     }
   ],
