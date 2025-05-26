@@ -42,7 +42,7 @@ jobs:
           # Use the run number of the triggering 'Create Docker Images and Push to AWS' workflow.
           # This matches the 'v<run_number>' tag pushed by that workflow.
           TRIGGERING_WORKFLOW_RUN_NUMBER=${{ github.event.workflow_run.run_number }}
-          TAG="v${TRIGGERING_WORKFLOW_RUN_NUMBER}"
+          TAG=latest
           echo "Deploying with image tag: ${TAG}"
           echo "FRONTEND_IMAGE=${ECR_REGISTRY}/${FRONTEND_REPO}:${TAG}" >> $GITHUB_ENV
           echo "BACKEND_IMAGE=${ECR_REGISTRY}/${BACKEND_REPO}:${TAG}" >> $GITHUB_ENV
