@@ -20,6 +20,13 @@ namespace WebAPI.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            // Bypass middleware logic for health check endpoint
+            if (context.Request.Path.StartsWithSegments("/health"))
+            {
+                await _requestDelegate(context);
+                return;
+            }
+
 #if DEBUG
             IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
             string? secretData = config["ConnectionStrings-SQL"];
@@ -65,6 +72,12 @@ namespace WebAPI.Middlewares
 
             if(context.Request.Path.ToString().StartsWith("/auth/login") || context.Request.Path.ToString().StartsWith("/auth/refresh"))
             {
+                // Bypass Redis check if health check somehow matched this (though unlikely with above check)
+                if (context.Request.Path.StartsWithSegments("/health"))
+                {
+                    await _requestDelegate(context);
+                    return;
+                }
                 try
                 {
                     using (ConnectionMultiplexer redis = await ConnectionMultiplexer.ConnectAsync(redisOptions))
@@ -90,6 +103,12 @@ namespace WebAPI.Middlewares
 
             if (context.Request.Path.ToString().StartsWith("/user") && !(context.Request.Method.ToUpper()=="GET" && context.Request.Path.ToString().StartsWith("/user/")))
             {
+                // Bypass auth check if health check somehow matched this (though unlikely with above check)
+                if (context.Request.Path.StartsWithSegments("/health"))
+                {
+                    await _requestDelegate(context);
+                    return;
+                }
                 var authHeader = context.Request.Headers["Authorization"].ToString();
 
                 if (authHeader != null && authHeader.StartsWith("Bearer "))
