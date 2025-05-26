@@ -5,6 +5,7 @@ on:
     workflows: ["Create Docker Images and Push to AWS"]   
     types:
       - completed
+  workflow_dispatch: ## allows for manual triggering of the workflow
 
 jobs:
   deploy:
