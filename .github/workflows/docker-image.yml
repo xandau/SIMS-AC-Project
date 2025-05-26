@@ -1,8 +1,8 @@
 name: Create Docker Images and Push to AWS
 on:
-  push:
-    branches: [ "main" ]
-
+#  push:
+#    branches: [ "main" ]
+  workflow_dispatch: ## alows for manual triggering of the workflow
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
