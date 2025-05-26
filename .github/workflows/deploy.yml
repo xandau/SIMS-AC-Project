@@ -23,6 +23,7 @@ jobs:
       BACKEND_SG_IDS:        ${{ secrets.BACKEND_SG_IDS }}
       BACKEND_DB_SECRET_ARN: ${{ secrets.BACKEND_DB_SECRET_ARN }}
       BACKEND_REDIS_SECRET_ARN: ${{ secrets.BACKEND_REDIS_SECRET_ARN }}
+      ALB_TARGET_GROUP_ARN : ${{ secrets.ALB_TARGET_GROUP_ARN }}
 
     steps:
       - name: Check out code
