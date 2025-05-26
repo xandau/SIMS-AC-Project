@@ -17,6 +17,7 @@ using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks; // Add this if you want to customize the response, otherwise not strictly needed for basic 200
 
 namespace WebAPI
 {
@@ -36,6 +37,9 @@ namespace WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Add basic health check services
+            builder.Services.AddHealthChecks();
 
             // Load secrets for database connection
 #if DEBUG
@@ -129,6 +133,10 @@ namespace WebAPI
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // Map the basic health check endpoint to return HTTP 200
+            app.MapHealthChecks("/health");
+
             app.Run();
         }
 

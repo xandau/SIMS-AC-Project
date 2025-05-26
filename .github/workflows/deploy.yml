@@ -126,7 +126,7 @@ jobs:
         with:
           task-definition: .github/ecs/taskdef-backend.json
           container-name:  backend
-          image:           ${{ env.FRONTEND_IMAGE }}
+          image:           ${{ env.BACKEND_IMAGE }}
 
       - name: Register frontend task definition
         id: register-backend
@@ -178,7 +178,7 @@ jobs:
               --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}" \
               --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN},containerName=backend,containerPort=8081"
 
-              
+
           else
             echo "Service $BACKEND_SERVICE not found (or in provisioning). Creating new service…"
             aws ecs create-service \
