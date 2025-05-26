@@ -182,4 +182,4 @@ jobs:
             aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$BACKEND_SERVICE" --force 2>/dev/null || true
             if [ "$STATUS" != "NOT_FOUND" ]; then # Only wait if it wasn't NOT_FOUND initially
                 aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" 2
-
+          fi
