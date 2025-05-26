@@ -181,5 +181,14 @@ jobs:
             # Attempt to delete if it exists in a weird state, ignore error if not found
             aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$BACKEND_SERVICE" --force 2>/dev/null || true
             if [ "$STATUS" != "NOT_FOUND" ]; then # Only wait if it wasn't NOT_FOUND initially
-                aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" 2
-          fi
+                aws ecs wait services-inactive --cluster "$CLUSTER_NAME" --services "$BACKEND_SERVICE" 2>/dev/null || true # CORRECTED
+            fi
+            # Ensure create-service is called in the else block
+            aws ecs create-service \
+              --cluster "$CLUSTER_NAME" \
+              --service-name "$BACKEND_SERVICE" \
+              --task-definition "$BACK_TASK_DEF_ARN" \
+              --desired-count 1 \
+              --launch-type FARGATE \
+              --network-configuration "awsvpcConfiguration={subnets=[${BACKEND_SUBNET_IDS}],securityGroups=[${BACKEND_SG_IDS}],assignPublicIp=DISABLED}"
+          fi # This fi closes the main if/elif/else block
