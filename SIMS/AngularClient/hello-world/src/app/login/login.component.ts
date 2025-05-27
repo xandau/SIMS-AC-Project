@@ -74,25 +74,11 @@ export class LoginComponent {
         next: (response: any) => {
           console.log('Login successful!', response);
 
-          // Determine domain for cookie
-          // If apiDomain is successfully extracted, use it. Otherwise, consider a fallback or error.
-          // For security, it's best if apiDomain is correctly set.
-          // Setting a cookie for a domain that doesn't match the API won't work.
-          const cookieDomain = this.ownURL || undefined; // Use undefined if domain couldn't be parsed, letting browser decide based on current doc.
-                                                        // Or, ensure apiDomain is always valid.
-                                                        // If apiDomain is an empty string, some browsers might set it for the current host.
-                                                        // For cross-origin, it MUST be the API's domain.
-
-          // if (!cookieDomain) {
-          if(!this.apiDomain) {
-            console.warn('Cookie domain could not be determined from API URL. Cookies might not be set correctly for cross-origin requests.');
-            // Decide on a fallback if necessary, e.g. for local development if apiUrl is just 'localhost'
-            // However, for your ALB setup, apiUrl should be the full URL.
-          }
+          console.log('API Domain for cookie:', this.ownURL);
           
           // Store tokens in cookies, now using the extracted domain
-          this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', undefined, 'Lax'});
-          this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', undefined, 'Lax'});
+          this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', domain: this.ownURL, secure: false, sameSite: 'Lax' });
+          this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', domain: this.ownURL, secure: false, sameSite: 'Lax' });
 
           // Redirect to home page after login
           this.router.navigate(['/dashboard']);
