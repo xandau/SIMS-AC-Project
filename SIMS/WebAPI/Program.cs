@@ -127,7 +127,7 @@ namespace WebAPI
             //app.UseHttpsRedirection();
 
             // Apply CORS policy
-            // app.UseCors("AllowSpecificOrigin");
+            app.UseCors("AllowSpecificOrigin");
 
             // Authentication and Authorization middleware
             app.UseAuthentication();
