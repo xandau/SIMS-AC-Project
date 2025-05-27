@@ -102,7 +102,8 @@ namespace WebAPI
                                   {
                                       policy.WithOrigins("http://fronteend-lb-1789506076.eu-central-1.elb.amazonaws.com")  // This allows any origin
                                             .AllowAnyHeader()
-                                            .AllowAnyMethod();
+                                            .AllowAnyMethod()
+                                            .AllowCredentials();
                                   });
             });
 
