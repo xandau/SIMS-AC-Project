@@ -31,7 +31,8 @@
                 "input": "src/assets",
                 "output": "/assets"
               },
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/health.html"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/magenta-violet.css",
