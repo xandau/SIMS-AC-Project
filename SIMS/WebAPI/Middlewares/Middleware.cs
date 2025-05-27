@@ -72,8 +72,8 @@ namespace WebAPI.Middlewares
                 AbortOnConnectFail = false,
                 ConnectTimeout = 5000,
                 SyncTimeout = 5000,
-                */
                 AllowAdmin = true,
+                */
                 Ssl = true
             };
 
@@ -134,7 +134,7 @@ namespace WebAPI.Middlewares
                     if (!context.Response.HasStarted)
                     {
                         context.Response.StatusCode = StatusCodes.Status409Conflict;
-                        await context.Response.WriteAsJsonAsync(new { Type = "error", Message = "An error occurred. Please try again later." });
+                        await context.Response.WriteAsJsonAsync(new { Type = "error", Message = "An error occurred. Please try again later."});
                         return;
                     }
                 }
