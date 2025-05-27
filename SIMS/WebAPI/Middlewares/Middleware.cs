@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.Data.SqlClient;
 using StackExchange.Redis;
+using System.Text.Json;
 using WebAPI.AuthServices;
 using WebAPI.Enums;
 using WebAPI.Repository;
@@ -32,9 +33,31 @@ namespace WebAPI.Middlewares
             string? secretData = config["ConnectionStrings-SQL"];
             string? secretDataRedis = config["ConnectionStrings-REDIS"];
 #else
-            IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            string? secretData = config["ConnectionStrings-SQL"];
-            string? secretDataRedis = config["ConnectionStrings-REDIS"];
+            IConfigurationRoot envConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            string? baseConnectionString = envConfig["ConnectionStrings-SQL"];
+            secretDataRedis = envConfig["ConnectionStrings-REDIS"];
+
+            fullSqlConnectionStringForMiddleware = baseConnectionString; // Default
+            try
+            {
+                JsonDocument secretJson = await Program.GetSecret(); // CALL GetSecret()
+                string? username = secretJson.RootElement.GetProperty("username").GetString();
+                string? password = secretJson.RootElement.GetProperty("password").GetString();
+
+                if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+                {
+                    if (!string.IsNullOrEmpty(baseConnectionString) && !baseConnectionString.Trim().EndsWith(";"))
+                    {
+                        baseConnectionString += ";";
+                    }
+                    fullSqlConnectionStringForMiddleware = $"{baseConnectionString}User ID={username};Password={password};";
+                }
+                // ... (error logging) ...
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Middleware Error: Failed to fetch/parse SQL secrets or build connection string: {ex.Message}");
+            }
 #endif
 
             var redisOptions = ConfigurationOptions.Parse(secretDataRedis);
@@ -52,10 +75,14 @@ namespace WebAPI.Middlewares
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(secretData))
+                // Use the potentially more complete connection string
+                if (!string.IsNullOrEmpty(fullSqlConnectionStringForMiddleware))
                 {
-                    await connection.OpenAsync();
-                }
+                    using (SqlConnection connection = new SqlConnection(fullSqlConnectionStringForMiddleware)) // USE THE ASSEMBLED STRING
+                    {
+                        await connection.OpenAsync();
+                    }
+                } else { /* log error */ }
             }
             catch (Exception ex)
             {
