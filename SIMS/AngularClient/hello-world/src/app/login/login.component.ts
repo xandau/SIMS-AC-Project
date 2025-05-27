@@ -91,11 +91,11 @@ export class LoginComponent {
         next: (response: any) => {
           console.log('Login successful!', response);
 
-          console.log('API Domain for cookie:', this.ownURL);
+          console.log('API Domain for cookie:', this.ownDomain);
           
           // Store tokens in cookies, now using the extracted domain
-          this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', domain: this.ownURL, secure: false, sameSite: 'Lax' });
-          this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', domain: this.ownURL, secure: false, sameSite: 'Lax' });
+          this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', domain: this.ownDomain, secure: false, sameSite: 'Lax' });
+          this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', domain: this.ownDomain, secure: false, sameSite: 'Lax' });
 
           // Redirect to home page after login
           this.router.navigate(['/dashboard']);
