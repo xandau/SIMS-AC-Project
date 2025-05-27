@@ -140,7 +140,7 @@ namespace WebAPI
             app.Run();
         }
 
-        static async Task<JsonDocument> GetSecret()
+        public static async Task<JsonDocument> GetSecret()
         {
             string secretName = "rds!db-1c56e640-dff0-4bce-aa20-2cff1209ee86";
             string region = "eu-central-1";
