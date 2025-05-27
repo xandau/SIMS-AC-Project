@@ -125,6 +125,9 @@ namespace WebAPI
             MigrateDatabase(app, connectionString, adminPassword);
 #endif
 
+            // Apply CORS policy
+            app.UseCors(MyAllowSpecificOrigins);
+
             // Middleware
             app.UseMiddleware<Middleware>();
    
@@ -137,9 +140,6 @@ namespace WebAPI
             }
 
             //app.UseHttpsRedirection();
-
-            // Apply CORS policy
-            app.UseCors(MyAllowSpecificOrigins);
 
             // Authentication and Authorization middleware
             app.UseAuthentication();
