@@ -91,8 +91,8 @@ export class LoginComponent {
           }
           
           // Store tokens in cookies, now using the extracted domain
-          this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', domain: cookieDomain, secure: false, sameSite: 'Lax' });
-          this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', domain: cookieDomain, secure: false, sameSite: 'Lax' });
+          this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', undefined, 'Lax'});
+          this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', undefined, 'Lax'});
 
           // Redirect to home page after login
           this.router.navigate(['/dashboard']);
