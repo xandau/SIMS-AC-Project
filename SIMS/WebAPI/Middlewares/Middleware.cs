@@ -35,9 +35,9 @@ namespace WebAPI.Middlewares
 #else
             IConfigurationRoot envConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
             string? baseConnectionString = envConfig["ConnectionStrings-SQL"];
-            secretDataRedis = envConfig["ConnectionStrings-REDIS"];
+            string? secretDataRedis = envConfig["ConnectionStrings-REDIS"];
 
-            fullSqlConnectionStringForMiddleware = baseConnectionString; // Default
+            string? fullSqlConnectionStringForMiddleware = baseConnectionString; // Default
             try
             {
                 JsonDocument secretJson = await Program.GetSecret(); // CALL GetSecret()
