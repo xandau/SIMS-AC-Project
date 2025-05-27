@@ -33,6 +33,7 @@ export class LoginComponent {
   apiUrl = (window as any).__env?.WEB_API_URL;
   ownURL = (window as any).__env?.WEB_OWN_DOMAIN;
   apiDomain = ''; // To store the extracted domain
+  ownDomain = ''; // To store the extracted domain for the cookie
 
   constructor(
     private fb: FormBuilder,
@@ -45,7 +46,7 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
 
-    // Extract domain from apiUrl
+     // Extract domain from apiUrl
     if (this.apiUrl) {
       try {
         const url = new URL(this.apiUrl);
@@ -59,6 +60,22 @@ export class LoginComponent {
         // If it's just a hostname, new URL() will fail.
         // A more robust regex might be needed if apiUrl isn't always a full URL.
         // For now, assuming apiUrl is like "http://domain.com" or "https://domain.com"
+      }
+    }
+
+    // Extract domain from ownURL for cookie
+    if (this.ownURL) {
+      try {
+        const url = new URL(this.ownURL);
+        this.ownDomain = url.hostname;
+      } catch (e) {
+        console.error('Error parsing ownURL for domain extraction:', e);
+        // Fallback or handle error if ownURL is not a valid URL
+        // For example, if running locally and ownURL might not have a scheme
+        // or if you want a default domain for local testing.
+        // If it's just a hostname, new URL() will fail.
+        // Consider a default or error handling if parsing fails.
+        this.ownDomain = ''; // Or some default like 'localhost' if appropriate
       }
     }
   }
