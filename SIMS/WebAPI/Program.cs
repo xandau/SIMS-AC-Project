@@ -94,6 +94,16 @@ namespace WebAPI
                 };
             });
 
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://example.com",
+                                                          "http://www.contoso.com");
+                                  });
+            });
 
 
             // Register repositories
@@ -127,7 +137,7 @@ namespace WebAPI
             //app.UseHttpsRedirection();
 
             // Apply CORS policy
-            app.UseCors("AllowSpecificOrigin");
+            app.UseCors(MyAllowSpecificOrigins);
 
             // Authentication and Authorization middleware
             app.UseAuthentication();
