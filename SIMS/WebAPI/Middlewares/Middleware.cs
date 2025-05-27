@@ -72,6 +72,7 @@ namespace WebAPI.Middlewares
                 ConnectTimeout = 5000,
                 SyncTimeout = 5000,
                 AllowAdmin = true,
+                Ssl = true
             };
 
             /*

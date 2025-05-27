@@ -20,12 +20,22 @@ namespace WebAPI.AuthServices
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
             string? endpointURL = config["ConnectionStrings-REDIS"];
+
+            var redisOptions = new ConfigurationOptions
+            {
+                EndPoints = { endpointURL },
+                AbortOnConnectFail = false,
+                ConnectTimeout = 5000,
+                SyncTimeout = 5000,
+                AllowAdmin = true,
+                Ssl = true
+            };
 #endif
             if (string.IsNullOrEmpty(endpointURL)) {
                 throw new ArgumentNullException(nameof(endpointURL), "Redis connection endpoint cannot be null or empty.");
             }
             Console.WriteLine("Redis-ConnectionString: " + endpointURL);
-            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(endpointURL);
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisOptions);
             _storage = redis.GetDatabase();
         }
 
