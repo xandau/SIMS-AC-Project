@@ -40,7 +40,9 @@ namespace WebAPI.Middlewares
             string? fullSqlConnectionStringForMiddleware = baseConnectionString; // Default
             try
             {
-                JsonDocument secretJson = await Program.GetSecret(); // CALL GetSecret()
+                IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+                JsonDocument secretJson = JsonDocument.Parse(config["SQL-User"]);
+                //JsonDocument secretJson = await Program.GetSecret(); // CALL GetSecret()
                 string? username = secretJson.RootElement.GetProperty("username").GetString();
                 string? password = secretJson.RootElement.GetProperty("password").GetString();
 

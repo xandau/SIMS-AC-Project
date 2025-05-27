@@ -51,7 +51,8 @@ namespace WebAPI
 
 #else
             IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            JsonDocument secretData = await GetSecret();
+            JsonDocument secretData = JsonDocument.Parse(config["SQL-User"]);
+                //await GetSecret();
             string? baseConnectionString = config["ConnectionStrings-SQL"]; // Retrieve base connection string from environment variables
             string? secretKey = config["JWTSettings-Secret"];
             string? adminPassword = config["Admin-Password"];
@@ -140,6 +141,7 @@ namespace WebAPI
             app.Run();
         }
 
+        /*
         public static async Task<JsonDocument> GetSecret()
         {
             string secretName = "rds!db-1c56e640-dff0-4bce-aa20-2cff1209ee86";
@@ -172,6 +174,7 @@ namespace WebAPI
 
             // Your code goes here
         }
+        */
 
         private static void MigrateDatabase(WebApplication app, string? secretData, string? password)
         {
