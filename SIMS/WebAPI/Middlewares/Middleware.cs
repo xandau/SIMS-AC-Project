@@ -62,8 +62,17 @@ namespace WebAPI.Middlewares
             }
 #endif
 
-            var redisOptions = ConfigurationOptions.Parse(secretDataRedis);
-            redisOptions.ConnectTimeout = 5000;
+            //var redisOptions = ConfigurationOptions.Parse(secretDataRedis);
+            //redisOptions.ConnectTimeout = 5000;
+
+            var redisOptions = new ConfigurationOptions
+            {
+                EndPoints = { secretDataRedis },
+                AbortOnConnectFail = false,
+                ConnectTimeout = 5000,
+                SyncTimeout = 5000,
+                AllowAdmin = true,
+            };
 
             /*
 
