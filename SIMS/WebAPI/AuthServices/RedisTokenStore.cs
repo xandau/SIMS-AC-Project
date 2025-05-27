@@ -24,10 +24,12 @@ namespace WebAPI.AuthServices
             var redisOptions = new ConfigurationOptions
             {
                 EndPoints = { endpointURL },
+                /*
                 AbortOnConnectFail = false,
                 ConnectTimeout = 5000,
                 SyncTimeout = 5000,
                 AllowAdmin = true,
+                */
                 Ssl = true
             };
 #endif
