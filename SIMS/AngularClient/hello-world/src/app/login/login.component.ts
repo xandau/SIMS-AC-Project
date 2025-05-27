@@ -44,21 +44,20 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
 
+    console.log('LoginComponent constructor: Initial apiUrl:', this.apiUrl); // Log initial apiUrl
     // Extract domain from apiUrl
     if (this.apiUrl) {
       try {
         const url = new URL(this.apiUrl);
         this.apiDomain = url.hostname;
+        console.log('LoginComponent constructor: Extracted apiDomain:', this.apiDomain); // Log extracted domain
       } catch (e) {
-        console.error('Error parsing API URL for domain extraction:', e);
-        // Fallback or handle error if apiUrl is not a valid URL
-        // For example, if running locally and apiUrl might not have a scheme
-        // or if you want a default domain for local testing.
-        // However, for deployed environments, apiUrl should be a full valid URL.
-        // If it's just a hostname, new URL() will fail.
-        // A more robust regex might be needed if apiUrl isn't always a full URL.
-        // For now, assuming apiUrl is like "http://domain.com" or "https://domain.com"
+        console.error('LoginComponent constructor: Error parsing API URL for domain extraction:', e);
+        console.error('LoginComponent constructor: apiUrl that caused error:', this.apiUrl);
+        this.apiDomain = ''; // Ensure it's reset if parsing fails
       }
+    } else {
+      console.warn('LoginComponent constructor: apiUrl is not set.');
     }
   }
 
@@ -66,31 +65,32 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
 
-      // console.log('API URL:', this.apiUrl); 
-      // console.log('API Domain for cookie:', this.apiDomain);
+      console.log('onSubmit: Current apiUrl:', this.apiUrl);
+      console.log('onSubmit: Current apiDomain for cookie:', this.apiDomain);
 
       this.http.post(`${this.apiUrl}/auth/login`, loginData).subscribe({
         next: (response: any) => {
-          console.log('Login successful!', response);
+          console.log('Login successful! Full response:', response); // Log the full response
 
-          // Determine domain for cookie
-          // If apiDomain is successfully extracted, use it. Otherwise, consider a fallback or error.
-          // For security, it's best if apiDomain is correctly set.
-          // Setting a cookie for a domain that doesn't match the API won't work.
-          const cookieDomain = this.apiDomain || undefined; // Use undefined if domain couldn't be parsed, letting browser decide based on current doc.
-                                                        // Or, ensure apiDomain is always valid.
-                                                        // If apiDomain is an empty string, some browsers might set it for the current host.
-                                                        // For cross-origin, it MUST be the API's domain.
-
-          if (!cookieDomain) {
-            console.warn('Cookie domain could not be determined from API URL. Cookies might not be set correctly for cross-origin requests.');
-            // Decide on a fallback if necessary, e.g. for local development if apiUrl is just 'localhost'
-            // However, for your ALB setup, apiUrl should be the full URL.
+          if (!response || !response.accessToken || !response.refreshToken) {
+            console.error('Login response missing accessToken or refreshToken:', response);
+            this.isError = true;
+            this.errorMessage = 'Login response from server was incomplete.';
+            return; // Stop if tokens are missing
           }
-          
+
+          const cookieDomain = this.apiDomain || undefined;
+          console.log('Setting cookies with domain:', cookieDomain);
+          console.log('Access Token from response:', response.accessToken);
+          console.log('Refresh Token from response:', response.refreshToken);
+
           // Store tokens in cookies, now using the extracted domain
           this.cookieService.set('accessToken', response.accessToken, { expires: 1, path: '/', domain: cookieDomain, secure: false, sameSite: 'Lax' });
           this.cookieService.set('refreshToken', response.refreshToken, { expires: 30, path: '/', domain: cookieDomain, secure: false, sameSite: 'Lax' });
+
+          // Verify if cookies are set (this is a synchronous check, browser might take a moment)
+          console.log('Cookie "accessToken" after set:', this.cookieService.get('accessToken'));
+          console.log('Cookie "refreshToken" after set:', this.cookieService.get('refreshToken'));
 
           // Redirect to home page after login
           this.router.navigate(['/dashboard']);
