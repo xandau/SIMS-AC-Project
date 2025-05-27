@@ -20,11 +20,5 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideAnimationsAsync(),
+}
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    importProvidersFrom(CookieModule.forRoot()),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    provideHttpClient(withInterceptorsFromDi())
-  ]
-};
