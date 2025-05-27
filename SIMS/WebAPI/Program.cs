@@ -100,7 +100,7 @@ namespace WebAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.AllowAnyOrigin()  // This allows any origin
+                                      policy.WithOrigins("http://fronteend-lb-1789506076.eu-central-1.elb.amazonaws.com")  // This allows any origin
                                             .AllowAnyHeader()
                                             .AllowAnyMethod();
                                   });
