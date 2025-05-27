@@ -50,7 +50,7 @@ namespace WebAPI.Middlewares
                     {
                         baseConnectionString += ";";
                     }
-                    fullSqlConnectionStringForMiddleware = $"{baseConnectionString}User ID={username};Password={password};";
+                    fullSqlConnectionStringForMiddleware = $"{baseConnectionString}User Id={username};Password={password};";
                 }
                 // ... (error logging) ...
             }
@@ -144,7 +144,7 @@ namespace WebAPI.Middlewares
 
                     long id = _jwtService.GetClaimsFromToken(token);
 
-                    using (SqlConnection connection = new SqlConnection(secretData))
+                    using (SqlConnection connection = new SqlConnection(fullSqlConnectionStringForMiddleware))
                     {
                         connection.Open();
 
