@@ -98,6 +98,7 @@ jobs:
               --service "$FRONTEND_SERVICE" \
               --task-definition "$FRONT_TASK_DEF_ARN" \
               --force-new-deployment
+              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN_FRONT},containerName=backend,containerPort=80"
           elif [ "$SERVICE_STATUS" == "INACTIVE" ]; then
             echo "Service $FRONTEND_SERVICE is INACTIVE. Deleting and recreating."
             aws ecs delete-service --cluster "$CLUSTER_NAME" --service "$FRONTEND_SERVICE" --force
@@ -110,7 +111,8 @@ jobs:
               --task-definition "$FRONT_TASK_DEF_ARN" \
               --desired-count 1 \
               --launch-type FARGATE \
-              --network-configuration "awsvpcConfiguration={subnets=[${FRONTEND_SUBNET_IDS}],securityGroups=[${FRONTEND_SG_IDS}],assignPublicIp=ENABLED}"
+              --network-configuration "awsvpcConfiguration={subnets=[${FRONTEND_SUBNET_IDS}],securityGroups=[${FRONTEND_SG_IDS}],assignPublicIp=DISABLED}"
+              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN_FRONT},containerName=backend,containerPort=80"
           elif [ "$SERVICE_STATUS" != "NOT_FOUND" ]; then
             # Service exists but is not ACTIVE or INACTIVE (e.g., DRAINING, PROVISIONING)
             # This block is now correctly entered only for actual existing statuses other than ACTIVE/INACTIVE
@@ -121,6 +123,7 @@ jobs:
               --task-definition "$FRONT_TASK_DEF_ARN" \
               --desired-count 1 \
               --force-new-deployment
+              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN_FRONT},containerName=backend,containerPort=80"
           else
             # SERVICE_STATUS is "NOT_FOUND" (due to command failure, empty query result, or "None" query result)
             echo "Service $FRONTEND_SERVICE does not exist (derived status: $SERVICE_STATUS). Creating new service."
@@ -130,7 +133,8 @@ jobs:
               --task-definition "$FRONT_TASK_DEF_ARN" \
               --desired-count 1 \
               --launch-type FARGATE \
-              --network-configuration "awsvpcConfiguration={subnets=[${FRONTEND_SUBNET_IDS}],securityGroups=[${FRONTEND_SG_IDS}],assignPublicIp=ENABLED}"
+              --network-configuration "awsvpcConfiguration={subnets=[${FRONTEND_SUBNET_IDS}],securityGroups=[${FRONTEND_SG_IDS}],assignPublicIp=DISABLED}"
+              --load-balancers "targetGroupArn=${ALB_TARGET_GROUP_ARN_FRONT},containerName=backend,containerPort=80"
           fi
 
       # Backend 
