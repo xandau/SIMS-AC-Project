@@ -25,6 +25,7 @@ namespace WebAPI.AuthServices
                 throw new ArgumentNullException(nameof(endpointURL), "Redis connection endpoint cannot be null or empty.");
             }
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(endpointURL);
+            Console.WriteLine("Redis-ConnectionString: " + endpointURL);
             _storage = redis.GetDatabase();
         }
 
