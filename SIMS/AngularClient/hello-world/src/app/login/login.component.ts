@@ -83,7 +83,8 @@ export class LoginComponent {
                                                         // If apiDomain is an empty string, some browsers might set it for the current host.
                                                         // For cross-origin, it MUST be the API's domain.
 
-          if (!cookieDomain) {
+          // if (!cookieDomain) {
+          if(!this.apiDomain) {
             console.warn('Cookie domain could not be determined from API URL. Cookies might not be set correctly for cross-origin requests.');
             // Decide on a fallback if necessary, e.g. for local development if apiUrl is just 'localhost'
             // However, for your ALB setup, apiUrl should be the full URL.
