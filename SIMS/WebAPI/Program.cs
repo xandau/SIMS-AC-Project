@@ -1,23 +1,23 @@
+using Amazon;
 using Amazon.SecretsManager;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks; // Add this if you want to customize the response, otherwise not strictly needed for basic 200
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebAPI.AuthServices;
 using WebAPI.Enums;
 using WebAPI.Middlewares;
 using WebAPI.Models;
 using WebAPI.Repository;
-using Amazon;
-using Amazon.SecretsManager;
-using Amazon.SecretsManager.Model;
-using System.Text.Json;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks; // Add this if you want to customize the response, otherwise not strictly needed for basic 200
 
 namespace WebAPI
 {
@@ -100,8 +100,9 @@ namespace WebAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://example.com",
-                                                          "http://www.contoso.com");
+                                      policy.AllowAnyOrigin()  // This allows any origin
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
                                   });
             });
 
