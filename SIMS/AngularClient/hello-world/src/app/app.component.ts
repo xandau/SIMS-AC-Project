@@ -24,7 +24,7 @@ export class AppComponent {
   isAuthenticated = false;  // Declare and initialize isAuthenticated
 
   apiUrl = (window as any).__env?.WEB_API_URL;
-    ownURL = (window as any).__env?.WEB_OWN_DOMAIN; 
+  ownURL = (window as any).__env?.WEB_OWN_DOMAIN; 
   ownDomain = '';
 
   constructor(private router: Router, private route: ActivatedRoute, private cookieService: CookieService, private http: HttpClient) {
@@ -36,7 +36,6 @@ export class AppComponent {
         this.showCreateTicketButton = currentUrl.includes('/dashboard') || currentUrl.includes('/tickets') || currentUrl.includes('/assigned-tickets') || currentUrl.includes('/created-tickets');
         this.checkAuthentication();  // Check if the user is authenticated
       });
-  }
 
     if (this.ownURL) {
       try {
@@ -47,8 +46,8 @@ export class AppComponent {
         this.ownDomain = ''; // Or a default/fallback domain like 'localhost' if appropriate
       }
     }
+  }
 
-    
   checkAuthentication() {
     // Check for the presence of an accessToken in cookies
     const token = this.cookieService.get('accessToken');
