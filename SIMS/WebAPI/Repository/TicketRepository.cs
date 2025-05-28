@@ -129,15 +129,24 @@ namespace WebAPI.Repository
             Console.WriteLine("Response received....");
             Console.WriteLine("Response: " + response);
 
-            if (response.StatusCode != 200 && response.StatusCode != 202)
+            if (response.Payload == null)
             {
-                using var errorReader = new StreamReader(response.Payload);
-                var errorPayload = await errorReader.ReadToEndAsync();
-                throw new Exception($"Lambda invocation failed. StatusCode: {response.StatusCode}, FunctionError: {response.FunctionError}, Payload: {errorPayload}");
+                if (response.StatusCode == 202) // 202 is success for async invocation
+                    return "Async invocation accepted (no payload)";
+
+                throw new Exception($"Lambda invocation failed. Status: {response.StatusCode}, No payload received");
             }
 
             using var reader = new StreamReader(response.Payload);
-            return await reader.ReadToEndAsync(); // Successful response from Lambda
+            string payloadContent = await reader.ReadToEndAsync();
+
+            // Check for errors only if status isn't 202 (success)
+            if (response.StatusCode != 202 && response.StatusCode != 200)
+            {
+                throw new Exception($"Lambda invocation failed. Status: {response.StatusCode}, Payload: {payloadContent}");
+            }
+
+            return payloadContent;
         }
     }
 }
