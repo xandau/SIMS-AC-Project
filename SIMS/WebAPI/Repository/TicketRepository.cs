@@ -119,16 +119,17 @@ namespace WebAPI.Repository
             var request = new InvokeRequest
             {
                 FunctionName = functionName,
-                InvocationType = InvocationType.RequestResponse,
+                InvocationType = InvocationType.Event,
                 Payload = JsonSerializer.Serialize(payload)
             };
 
-            Console.WriteLine("Call Lambda....");
+            Console.WriteLine($"Invoking {functionName} asynchronously...");
             var response = await _lambdaClient.InvokeAsync(request);
+
             Console.WriteLine("Response received....");
             Console.WriteLine("Response: " + response);
 
-            if (response.StatusCode != 200)
+            if (response.StatusCode != 200 && response.StatusCode != 202)
             {
                 using var errorReader = new StreamReader(response.Payload);
                 var errorPayload = await errorReader.ReadToEndAsync();
