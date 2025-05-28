@@ -88,8 +88,8 @@ export class CreatedTicketsComponent implements OnInit {
     }
 
     const body = {
-      assignedPerson: ticketToStop.assignedPersonID, // Assuming you want to send the ID
-      referenceID: ticketToStop.referenceID
+      id: ticketToStop.assignedPersonID, // Assuming you want to send the ID
+      instanceid: ticketToStop.referenceID
     };
 
     this.http.post(`${this.apiUrl}/ticket/stop`, body, { headers }).subscribe({

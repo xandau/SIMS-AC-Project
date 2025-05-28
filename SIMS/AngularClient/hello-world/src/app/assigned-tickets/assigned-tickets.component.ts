@@ -78,10 +78,24 @@ export class AssignedTicketsComponent implements OnInit {
       'Content-Type': 'application/json',
     });
 
-    this.http.post(`${this.apiUrl}/ticket/stop/${ticketId}`, {}, { headers }).subscribe({
+    const ticketToStop = this.createdTickets.find(ticket => ticket.id === ticketId);
+
+    if (!ticketToStop) {
+      console.error('Ticket not found');
+      this.isError = true;
+      this.errorMessage = 'Ticket not found. Cannot stop instance.';
+      return;
+    }
+
+    const body = {
+      id: ticketToStop.assignedPersonID, // Assuming you want to send the ID
+      instanceid: ticketToStop.referenceID
+    };
+
+    this.http.post(`${this.apiUrl}/ticket/stop`, body, { headers }).subscribe({
       next: (response: any) => {
-        console.log('Ticket stopped successfully', response);
-        this.fetchAssignedTickets(); // Refresh the list after stopping the ticket
+        console.log('Ticket stop request successful', response);
+        this.fetchCreatedTickets(); // Refresh the list after stopping the ticket
       },
       error: (err) => {
         console.error('Error stopping ticket', err);
