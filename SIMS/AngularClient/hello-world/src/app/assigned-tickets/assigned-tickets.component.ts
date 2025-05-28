@@ -78,7 +78,7 @@ export class AssignedTicketsComponent implements OnInit {
       'Content-Type': 'application/json',
     });
 
-    const ticketToStop = this.createdTickets.find(ticket => ticket.id === ticketId);
+    const ticketToStop = this.assignedTicketsdata.find(ticket => ticket.id === ticketId);
 
     if (!ticketToStop) {
       console.error('Ticket not found');
@@ -95,7 +95,7 @@ export class AssignedTicketsComponent implements OnInit {
     this.http.post(`${this.apiUrl}/ticket/stop`, body, { headers }).subscribe({
       next: (response: any) => {
         console.log('Ticket stop request successful', response);
-        this.fetchCreatedTickets(); // Refresh the list after stopping the ticket
+        this.fetchAssignedTickets(); // Refresh the list after stopping the ticket
       },
       error: (err) => {
         console.error('Error stopping ticket', err);
