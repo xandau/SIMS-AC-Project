@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using WebAPI.DTOs;
 using WebAPI.Models;
 using WebAPI.Repository;
 
@@ -62,6 +64,23 @@ namespace WebAPI.Controllers
                 }
             }
                 
+        }
+
+        [HttpPost("stop")]
+        public async Task<ActionResult> StopInstance([Required] StopInstance request)
+        {
+            string? accessToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last().ToString();
+            try
+            {
+                await _ticketRepository.StopInstance(accessToken, request);
+                return Ok("Instance deleted");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest("Something went wrong calling Lambda.");
+            }
+            
         }
     }
 }

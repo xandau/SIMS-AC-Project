@@ -1,4 +1,5 @@
 using Amazon;
+using Amazon.Lambda;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
@@ -18,6 +19,7 @@ using WebAPI.Enums;
 using WebAPI.Middlewares;
 using WebAPI.Models;
 using WebAPI.Repository;
+using Amazon.Lambda;
 
 namespace WebAPI
 {
@@ -110,6 +112,7 @@ namespace WebAPI
 
             // Register repositories
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
+            builder.Services.AddAWSService<IAmazonLambda>();
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
             builder.Services.AddScoped<IRepository<LogEntry>, LogEntryRepository>();
             builder.Services.AddScoped<UserRepository>();
