@@ -91,6 +91,7 @@ namespace WebAPI.Repository
         {
             long id = jwtService.GetClaimsFromToken(access_token);
             string instanceId = request.InstanceId;
+            Console.WriteLine("Check instanceId: " + instanceId);
 
 
             if (id == 0)
@@ -122,7 +123,10 @@ namespace WebAPI.Repository
                 Payload = JsonSerializer.Serialize(payload)
             };
 
+            Console.WriteLine("Call Lambda....");
             var response = await _lambdaClient.InvokeAsync(request);
+            Console.WriteLine("Response received....");
+            Console.WriteLine("Response: " + response);
 
             if (response.StatusCode != 200)
             {
