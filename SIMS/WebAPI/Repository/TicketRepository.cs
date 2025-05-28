@@ -105,7 +105,7 @@ namespace WebAPI.Repository
                 if (ticket is null)
                     throw new Exception("Ticket not found.");
 
-                var result = await CallLambdaAsync("arn:aws:lambda:eu-central-1:243202250040:function:TerminateInstances", new { instance_id = instanceId });
+                var result = await CallLambdaAsync("TerminateInstances", new { instance_id = instanceId });
 
                 ticket.State = Enums.ETicketState.CLOSED;
                 _context.SaveChanges();
